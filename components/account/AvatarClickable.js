@@ -1,5 +1,5 @@
 import Image from "next/image";
-import defaultProfilePic from "../../../public/default_profile_picture.png";
+import defaultProfilePic from "../../public/default_profile_picture.png";
 import { useState, useRef } from "react";
 import AccountMenu from "./AccountMenu";
 import useOutsideClick from "../../hooks/useOutsideClick";
