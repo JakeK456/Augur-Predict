@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import AccountSummary from "./AccountSummary";
 
 export default function AccountMenu({ isOpen }) {
@@ -23,13 +24,7 @@ export default function AccountMenu({ isOpen }) {
           </Link>
         </li>
         <li className="m-auto p-4 w-full">
-          <button
-            href="/news"
-            className="text-dark-theme-6 pl-4"
-            onClick={() => {
-              console.log("Need to hook up logout button in AccountMenu.js");
-            }}
-          >
+          <button className="text-dark-theme-6 pl-4" onClick={signOut}>
             Sign Out
           </button>
         </li>
