@@ -2,7 +2,7 @@ import Image from "next/image";
 import defaultProfilePic from "../../../public/default_profile_picture.png";
 import { useState, useRef } from "react";
 import AccountMenu from "./AccountMenu";
-import useOutsideClick from "../../../hooks/useOutsideClick";
+import useOutsideClick from "../../hooks/useOutsideClick";
 
 export default function AvatarClickable() {
   const ref = useRef();
