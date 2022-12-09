@@ -15,7 +15,7 @@ export default function AvatarClickable() {
   });
 
   return (
-    <div>
+    <div className="relative mr-2">
       <div ref={ref} className="aspect-square p-2 cursor-pointer">
         <Image
           src={defaultProfilePic}

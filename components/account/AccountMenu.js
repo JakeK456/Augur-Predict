@@ -6,25 +6,35 @@ export default function AccountMenu({ isOpen }) {
   return (
     <div
       className={`${
-        isOpen ? "scale-x-100 translate-x-0" : "scale-x-0 translate-x-1/2"
-      } absolute top-16 right-0 rounded-bl-lg bg-dark-theme-2 w-[60vw] sm:w-[35vw] ease-in-out duration-300`}
+        isOpen ? "block" : "hidden"
+      } absolute top-[70px] -right-[1px] rounded bg-dark-theme-2 border border-dark-theme-border w-52`}
     >
+      <div className="absolute -top-2 right-6 border-l border-t  border-dark-theme-border rotate-45 w-4 h-4 bg-dark-theme-2"></div>
       <ul className="flex flex-col">
-        <li className="m-auto p-4 border-b border-dark-theme-3 w-full">
+        <li className="flex h-28 border-b border-dark-theme-border">
           <AccountSummary />
         </li>
-        <li className="m-auto p-4 border-b border-dark-theme-3 w-full">
-          <Link href="/profile" className="text-dark-theme-6 pl-4">
+        <li className="flex h-12 py-2 border-b border-dark-theme-border">
+          <Link
+            href="/profile"
+            className="flex items-center grow pl-4 text-sm text-dark-theme-6 hover:text-dark-hover-text hover:bg-dark-surface-hover"
+          >
             Profile
           </Link>
         </li>
-        <li className="m-auto p-4 border-b border-dark-theme-3 w-full">
-          <Link href="/account" className="text-dark-theme-6 pl-4">
+        <li className="flex h-12 py-2 border-b border-dark-theme-border ">
+          <Link
+            href="/account"
+            className="flex items-center grow pl-4 text-sm text-dark-theme-6 hover:text-dark-hover-text hover:bg-dark-surface-hover"
+          >
             Account
           </Link>
         </li>
-        <li className="m-auto p-4 w-full">
-          <button className="text-dark-theme-6 pl-4" onClick={signOut}>
+        <li className="flex h-12 py-2">
+          <button
+            className="flex items-center grow pl-4 text-sm text-dark-theme-6 hover:text-dark-hover-text hover:bg-dark-surface-hover"
+            onClick={signOut}
+          >
             Sign Out
           </button>
         </li>
