@@ -32,7 +32,7 @@ export default async function handler(req, res) {
       where: { username },
       select: { avatar: true },
     });
-    return res.status(200).json(avatarURL);
+    return res.status(200).json(avatarURL.avatar);
   } else if (req.method === "POST") {
     const { image, profile } = req.body;
 

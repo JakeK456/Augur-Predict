@@ -16,7 +16,7 @@ export default function Avatar({ size, profile, user }) {
     const username = profile.username;
     const res = await fetch(`/api/profile/avatar?username=${username}`);
     const fetchedAvatar = await res.json();
-    setAvatar(fetchedAvatar.avatar);
+    setAvatar(fetchedAvatar);
   };
 
   return (
