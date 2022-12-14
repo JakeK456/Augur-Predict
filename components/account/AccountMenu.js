@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { signOut } from "next-auth/react";
-import AccountSummary from "./AccountSummary";
 
-export default function AccountMenu({ isOpen }) {
+import MenuProfileSummary from "./MenuProfileSummary";
+
+export default function AccountMenu({ profile, user, isOpen }) {
   return (
     <div
       className={`${
@@ -12,15 +13,24 @@ export default function AccountMenu({ isOpen }) {
       <div className="absolute -top-2 right-6 border-l border-t  border-dark-theme-border rotate-45 w-4 h-4 bg-dark-theme-2"></div>
       <ul className="flex flex-col">
         <li className="flex h-28 border-b border-dark-theme-border">
-          <AccountSummary />
+          <MenuProfileSummary profile={profile} user={user} />
         </li>
         <li className="flex h-12 py-2 border-b border-dark-theme-border">
-          <Link
-            href="/profile"
-            className="flex items-center grow pl-4 text-sm text-dark-theme-6 hover:text-dark-hover-text hover:bg-dark-surface-hover"
-          >
-            Profile
-          </Link>
+          {profile ? (
+            <Link
+              href={`${profile.username}`}
+              className="flex items-center grow pl-4 text-sm text-dark-theme-6 hover:text-dark-hover-text hover:bg-dark-surface-hover"
+            >
+              Profile
+            </Link>
+          ) : (
+            <Link
+              href="/profile"
+              className="flex items-center grow pl-4 text-sm text-dark-theme-6 hover:text-dark-hover-text hover:bg-dark-surface-hover"
+            >
+              Profile
+            </Link>
+          )}
         </li>
         <li className="flex h-12 py-2 border-b border-dark-theme-border ">
           <Link

@@ -6,7 +6,7 @@ import GoogleProvider from "next-auth/providers/google";
 import nodemailer from "nodemailer";
 
 // Instantiate Prisma Client
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 export default NextAuth({
   providers: [
@@ -20,11 +20,16 @@ export default NextAuth({
     }),
   ],
   adapter: PrismaAdapter(prisma),
-  // pages: {
-  //   signIn: "/",
-  //   signOut: "/",
-  //   error: "/",
-  //   verifyRequest: "/",
-  // },
-  secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+    async session({ session, token, user }) {
+      session = {
+        ...session,
+        user: {
+          id: user.id,
+          ...session.user,
+        },
+      };
+      return session;
+    },
+  },
 });
