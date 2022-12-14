@@ -10,7 +10,7 @@ export default function Profile(profile = null) {
   return (
     <div className="flex h-screen">
       <div className="flex basis-1/3 justify-end border">
-        <ProfileSummary profile={profile} />
+        <ProfileSummary profile={profile} user={user} />
       </div>
       <div className="basis-2/3 border"></div>
     </div>

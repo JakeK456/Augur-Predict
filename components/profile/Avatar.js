@@ -3,10 +3,13 @@ import { useState, useRef, useEffect } from "react";
 import AvatarEditButton from "./AvatarEditButton";
 import { nanoid } from "nanoid";
 
-export default function Avatar({ size, profile }) {
+export default function Avatar({ size, profile, user }) {
   const ref = useRef();
   const [avatar, setAvatar] = useState(profile.avatar);
   const [rerender, setRerender] = useState(nanoid());
+
+  console.log(profile);
+  console.log(user);
 
   useEffect(() => {
     fetchAvatar();
@@ -23,7 +26,7 @@ export default function Avatar({ size, profile }) {
     <div className="relative">
       <div ref={ref} className="p-2">
         <Image
-          className="aspect-square cursor-pointer rounded-full border-2 border-gray-700 object-cover"
+          className="aspect-square rounded-full border-2 border-gray-700 object-cover"
           loader={myLoader}
           src={avatar}
           priority={true}
@@ -32,7 +35,9 @@ export default function Avatar({ size, profile }) {
           height={size}
         />
       </div>
-      <AvatarEditButton profile={profile} setRerender={setRerender} />
+      {profile?.userId === user?.id && (
+        <AvatarEditButton profile={profile} setRerender={setRerender} />
+      )}
     </div>
   );
 }
