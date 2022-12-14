@@ -21,6 +21,13 @@ export const config = {
 export default async function handler(req, res) {
   if (req.method === "GET") {
     const { username } = req.query;
+    if (!username) {
+      const { data, error: uploadError } = await supabase.storage
+        .from(process.env.SUPABASE_BUCKET)
+        .getPublicUrl("default_profile_picture.png");
+      return res.status(200).json(data.publicUrl);
+    }
+
     const avatarURL = await prisma.profile.findUnique({
       where: { username },
       select: { avatar: true },

@@ -16,15 +16,19 @@ export default function NavbarAvatar() {
   useEffect(() => {
     const fetchAvatar = async () => {
       const username = profile?.username;
-      const res = await fetch(`/api/profile/avatar?username=${username}`);
+      let fetchurl = "";
+      if (username) {
+        fetchurl = `/api/profile/avatar?username=${username}`;
+      } else {
+        fetchurl = "/api/profile/avatar";
+      }
+      const res = await fetch(`/api/profile/avatar`);
       const fetchedAvatar = await res.json();
-      setAvatar(fetchedAvatar.avatar);
+      setAvatar(fetchedAvatar);
     };
 
-    if (profile) {
-      fetchAvatar();
-    }
-  });
+    fetchAvatar();
+  }, []);
 
   useOutsideClick(ref, () => {
     if (isOpen) {
