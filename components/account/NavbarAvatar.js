@@ -22,13 +22,13 @@ export default function NavbarAvatar() {
       } else {
         fetchurl = "/api/profile/avatar";
       }
-      const res = await fetch(`/api/profile/avatar`);
+      const res = await fetch(fetchurl);
       const fetchedAvatar = await res.json();
       setAvatar(fetchedAvatar);
     };
 
     fetchAvatar();
-  }, []);
+  });
 
   useOutsideClick(ref, () => {
     if (isOpen) {
@@ -44,7 +44,8 @@ export default function NavbarAvatar() {
             className="aspect-square cursor-pointer rounded-full border-2 border-gray-700 object-cover"
             loader={myLoader}
             src={avatar}
-            alt="default profile picture"
+            placeholder="empty"
+            alt="profile picture"
             width={48}
             height={48}
             onClick={() => setIsOpen(!isOpen)}
