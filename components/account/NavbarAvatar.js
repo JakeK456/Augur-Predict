@@ -38,6 +38,7 @@ export default function NavbarAvatar() {
         {avatar && (
           <Image
             className="aspect-square cursor-pointer rounded-full border-2 border-gray-700 object-cover"
+            loader={myLoader}
             src={avatar}
             alt="default profile picture"
             width={48}
@@ -50,3 +51,7 @@ export default function NavbarAvatar() {
     </div>
   );
 }
+
+const myLoader = ({ src, width, quality }) => {
+  return `${src}?w=${width}&q=${quality || 75}`;
+};

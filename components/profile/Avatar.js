@@ -24,6 +24,7 @@ export default function Avatar({ size, profile }) {
       <div ref={ref} className="p-2">
         <Image
           className="aspect-square cursor-pointer rounded-full border-2 border-gray-700 object-cover"
+          loader={myLoader}
           src={avatar}
           priority={true}
           alt="default profile picture"
@@ -35,3 +36,7 @@ export default function Avatar({ size, profile }) {
     </div>
   );
 }
+
+const myLoader = ({ src, width, quality }) => {
+  return `${src}?w=${width}&q=${quality || 75}`;
+};
