@@ -10,7 +10,6 @@ const defaultAvatarURL = `${process.env.SUPABASE_URL.replace(
 export default async function handler(req, res) {
   if (req.method === "POST") {
     let profileData = req.body;
-    console.log("profile data", profileData);
     profileData["avatar"] = defaultAvatarURL;
     try {
       const profileCheck = await prisma.profile.findUnique({

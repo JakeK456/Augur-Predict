@@ -60,7 +60,6 @@ export default async function handler(req, res) {
       if (avatar !== defaultAvatarURL) {
         const urlSplit = avatar.split("/");
         const updatedUrl = urlSplit[urlSplit.length - 1];
-        console.log(updatedUrl);
         const { data, error: uploadError } = await supabase.storage
           .from(process.env.SUPABASE_BUCKET)
           .remove([updatedUrl]);

@@ -18,9 +18,7 @@ export default function Account() {
     setFormState((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const handleSubmit = async () => {
-    console.log("handle submit");
-  };
+  const handleSubmit = async () => {};
 
   return (
     <button

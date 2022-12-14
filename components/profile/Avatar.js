@@ -8,9 +8,6 @@ export default function Avatar({ size, profile, user }) {
   const [avatar, setAvatar] = useState(profile.avatar);
   const [rerender, setRerender] = useState(nanoid());
 
-  console.log(profile);
-  console.log(user);
-
   useEffect(() => {
     fetchAvatar();
   }, [rerender]);
