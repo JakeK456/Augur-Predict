@@ -5,7 +5,7 @@ import MainNav from "./MainNav";
 
 export default function Header() {
   return (
-    <div className="flex flex-row h-16 bg-dark-theme-2 border-b border-dark-theme-1">
+    <div className="flex flex-row h-16 bg-dark-surface">
       <HamburgerIcon />
       <LandMark />
       <MainNav />

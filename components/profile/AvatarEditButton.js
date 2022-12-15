@@ -2,10 +2,12 @@ import { useState, useRef, useEffect } from "react";
 import { GrEdit } from "react-icons/gr";
 import useOutsideClick from "hooks/useOutsideClick";
 import { nanoid } from "nanoid";
+import { useRouter } from "next/router";
 
 const imageMimeType = /image\/(png|jpg|jpeg)/i;
 
 export default function AvatarEditButton({ profile, setRerender }) {
+  const router = useRouter();
   const ref = useRef();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -43,7 +45,16 @@ export default function AvatarEditButton({ profile, setRerender }) {
       body: JSON.stringify({ image, profile }),
     });
     const avatarURL = await res.json();
-    setRerender(nanoid());
+
+    const revalidate = await fetch("/api/revalidate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(profile.username),
+    });
+
+    router.reload(window.location.pathname);
   };
 
   const removePhoto = async () => {
@@ -58,7 +69,16 @@ export default function AvatarEditButton({ profile, setRerender }) {
         },
         body: JSON.stringify({ profile }),
       });
-      setRerender(nanoid());
+
+      const revalidate = await fetch("/api/revalidate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(profile.username),
+      });
+
+      router.reload(window.location.pathname);
     }
   };
 
