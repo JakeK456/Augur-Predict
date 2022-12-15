@@ -2,33 +2,16 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import AccountMenu from "./AccountMenu";
 import useOutsideClick from "../../hooks/useOutsideClick";
-import useProfile from "../../hooks/useProfile";
+import defaultProfilePic from "../../public/default_profile_picture.png";
 import { useSession } from "next-auth/react";
+import { useProfileProvider } from "hooks/ProfileProvider";
 
 export default function NavbarAvatar() {
   const ref = useRef();
   const { data: session, status } = useSession();
   const user = session?.user;
-  const profile = useProfile();
+  const profile = useProfileProvider();
   const [isOpen, setIsOpen] = useState(false);
-  const [avatar, setAvatar] = useState();
-
-  useEffect(() => {
-    const fetchAvatar = async () => {
-      const username = profile?.username;
-      let fetchurl = "";
-      if (username) {
-        fetchurl = `/api/profile/avatar?username=${username}`;
-      } else {
-        fetchurl = "/api/profile/avatar";
-      }
-      const res = await fetch(fetchurl);
-      const fetchedAvatar = await res.json();
-      setAvatar(fetchedAvatar);
-    };
-
-    fetchAvatar();
-  });
 
   useOutsideClick(ref, () => {
     if (isOpen) {
@@ -39,11 +22,22 @@ export default function NavbarAvatar() {
   return (
     <div className="relative mr-2">
       <div ref={ref} className="p-2">
-        {avatar && (
+        {profile ? (
           <Image
             className="aspect-square cursor-pointer rounded-full border-2 border-gray-700 object-cover"
             loader={myLoader}
-            src={avatar}
+            src={profile.avatar}
+            placeholder="empty"
+            alt="profile picture"
+            width={48}
+            height={48}
+            onClick={() => setIsOpen(!isOpen)}
+          />
+        ) : (
+          <Image
+            className="aspect-square cursor-pointer rounded-full border-2 border-gray-700 object-cover"
+            loader={myLoader}
+            src={defaultProfilePic}
             placeholder="empty"
             alt="profile picture"
             width={48}

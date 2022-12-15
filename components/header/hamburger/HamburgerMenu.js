@@ -5,7 +5,7 @@ export default function HamburgerMenu({ isOpen }) {
     <div
       className={`${
         isOpen ? "scale-x-100 translate-x-0" : "scale-x-0 -translate-x-1/2"
-      } absolute top-16 left-0 rounded-br-lg bg-dark-theme-2 w-[60vw] sm:w-[35vw] ease-in-out duration-300`}
+      } absolute top-16 left-0 rounded-br-lg bg-dark-theme-2 w-[60vw] sm:w-[35vw] ease-in-out duration-300 z-50`}
     >
       <ul className="flex flex-col">
         <li className="m-auto p-4 border-b border-dark-theme-3 w-full">

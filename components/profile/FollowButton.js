@@ -13,6 +13,14 @@ export default function FollowButton({ profile, user }) {
         targetName: profile?.username,
       }),
     });
+
+    const revalidate = await fetch("/api/revalidate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(profile.username),
+    });
   };
 
   return (

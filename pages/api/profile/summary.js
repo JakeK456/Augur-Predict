@@ -3,9 +3,8 @@ import { prisma } from "@/lib/prisma";
 export default async function handler(req, res) {
   if (req.method === "POST") {
     const { userId } = req.body;
-
     try {
-      let profile = {};
+      let profile = null;
       if (userId) {
         profile = await prisma.profile.findUnique({
           where: {
@@ -13,13 +12,9 @@ export default async function handler(req, res) {
           },
         });
       }
-
-      if (Object.keys(profile).length === 0) {
-        profile = null;
-      }
-
       res.status(200).json(profile);
     } catch (error) {
+      console.log(error);
       res.status(500).json({ message: "Something went wrong" });
     }
   }

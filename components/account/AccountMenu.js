@@ -8,7 +8,7 @@ export default function AccountMenu({ profile, user, isOpen }) {
     <div
       className={`${
         isOpen ? "block" : "hidden"
-      } absolute top-[70px] -right-[1px] rounded bg-dark-theme-2 border border-dark-theme-border w-52`}
+      } absolute top-[70px] -right-[1px] rounded bg-dark-theme-2 border border-dark-theme-border w-52 z-50`}
     >
       <div className="absolute -top-2 right-6 border-l border-t  border-dark-theme-border rotate-45 w-4 h-4 bg-dark-theme-2"></div>
       <ul className="flex flex-col">

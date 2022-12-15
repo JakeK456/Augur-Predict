@@ -5,9 +5,12 @@ import NavbarAvatar from "../account/NavbarAvatar";
 export default function AccountNav() {
   const { data: session, status } = useSession();
 
+  if (status === "loading") {
+    return <></>;
+  }
   return (
     <div className="basis-1/5 flex justify-end">
-      {!session ? <AccountNavSignInButton /> : <NavbarAvatar />}
+      {session ? <NavbarAvatar /> : <AccountNavSignInButton />}
     </div>
   );
 }
