@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { signOut } from "next-auth/react";
-
+import { useProfileProvider } from "hooks/ProfileProvider";
 import MenuProfileSummary from "./MenuProfileSummary";
 
-export default function AccountMenu({ profile, user, isOpen }) {
+export default function AccountMenu({ user, isOpen }) {
+  const [profile, loading] = useProfileProvider();
   return (
     <div
       className={`${
