@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 import FollowButton from "./FollowButton";
 
-export default function ProfileSummaryCard({ profile }) {
+export default function ProfileSummaryCard({ profile, setButtonClick }) {
   return (
     <div className="flex border-b border-dark-theme-border w-full py-4 pl-4">
       <Link className="flex w-full" href={`${profile.username}`}>
@@ -21,7 +22,7 @@ export default function ProfileSummaryCard({ profile }) {
         </div>
       </Link>
       <div className="w-24 mr-4 my-auto">
-        <FollowButton profile={profile} />
+        <FollowButton profile={profile} setButtonClick={setButtonClick} />
       </div>
     </div>
   );

@@ -1,15 +1,27 @@
-import Avatar from "@/components/profile/Avatar";
 import ProfileMainContainer from "@/components/profile/ProfileMainContainer";
 import ProfileNav from "@/components/profile/ProfileNav";
 import ProfileSummary from "@/components/profile/ProfileSummary";
 import { prisma } from "@/lib/prisma";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 
-export default function Profile({ profile = null, followers, following }) {
+export default function Profile({ profile = null }) {
   const { data: session, status } = useSession();
   const user = session?.user;
-  const router = useRouter();
+
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
+  const [buttonClick, setButtonClick] = useState();
+
+  useEffect(() => {
+    const fetchFollows = async () => {
+      const res = await fetch(`/api/profile/list?username=${profile.username}`);
+      const follows = await res.json();
+      setFollowers(follows.followerProfiles);
+      setFollowing(follows.followingProfiles);
+    };
+    fetchFollows();
+  }, [profile.username, buttonClick]);
 
   return (
     <div>
@@ -25,13 +37,20 @@ export default function Profile({ profile = null, followers, following }) {
       {/* Below Nav */}
       <div className="m-auto flex max-w-screen-xl h-screen">
         <div className="w-80 shrink-0 h-full">
-          <ProfileSummary profile={profile} user={user} />
+          <ProfileSummary
+            profile={profile}
+            user={user}
+            followers={followers}
+            following={following}
+            setButtonClick={setButtonClick}
+          />
         </div>
         <div className="ml-4 grow shrink h-full">
           <ProfileMainContainer
             profile={profile}
             followers={followers}
             following={following}
+            setButtonClick={setButtonClick}
           />
         </div>
       </div>
@@ -53,20 +72,12 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const resProfile = await prisma.profile.findUnique({
     where: { username: params.id },
-    include: {
-      followers: true,
-      following: true,
-    },
   });
 
   if (resProfile) {
-    const followerProfiles = await getFollowers(resProfile);
-    const followingProfiles = await getFollowing(resProfile);
     return {
       props: {
         profile: JSON.parse(JSON.stringify(resProfile)),
-        followers: followerProfiles,
-        following: followingProfiles,
       },
     };
   }
@@ -78,31 +89,3 @@ export async function getStaticProps({ params }) {
     },
   };
 }
-
-const getFollowers = async (resProfile) => {
-  let followerProfiles = [];
-  for (let index = 0; index < resProfile.followers.length; index++) {
-    const { followerName } = resProfile.followers[index];
-    const profile = await prisma.profile.findUnique({
-      where: {
-        username: followerName,
-      },
-    });
-    followerProfiles.push(JSON.parse(JSON.stringify(profile)));
-  }
-  return followerProfiles;
-};
-
-const getFollowing = async (resProfile) => {
-  let followingProfiles = [];
-  for (let index = 0; index < resProfile.following.length; index++) {
-    const { followingName } = resProfile.following[index];
-    const profile = await prisma.profile.findUnique({
-      where: {
-        username: followingName,
-      },
-    });
-    followingProfiles.push(JSON.parse(JSON.stringify(profile)));
-  }
-  return followingProfiles;
-};

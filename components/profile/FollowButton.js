@@ -1,12 +1,10 @@
 import { useProfileProvider } from "hooks/ProfileProvider";
 import { useState, useEffect } from "react";
+import { nanoid } from "nanoid";
 
-export default function FollowButton({ profile }) {
+export default function FollowButton({ profile, setButtonClick }) {
   const [myProfile, setMyProfile, loading] = useProfileProvider();
   const [buttonAction, setButtonAction] = useState();
-
-  console.log(myProfile);
-  console.log(profile);
 
   useEffect(() => {
     // loading or viewing own profile
@@ -26,7 +24,6 @@ export default function FollowButton({ profile }) {
   }, [loading, myProfile, profile]);
 
   const follow = async () => {
-    setButtonAction("Unfollow");
     const addFollower = await fetch("api/profile/follow", {
       method: "POST",
       headers: {
@@ -38,15 +35,6 @@ export default function FollowButton({ profile }) {
       }),
     });
 
-    const revalidate = await fetch("/api/revalidate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify([profile.username, myProfile.username]),
-    });
-
-    // update client, until user refreshes to get new updated props
     let newFollowing = [...myProfile.following];
     newFollowing.push({
       followerName: myProfile.username,
@@ -54,10 +42,18 @@ export default function FollowButton({ profile }) {
     });
 
     setMyProfile({ ...myProfile, following: newFollowing });
+    setButtonClick(nanoid());
+
+    const revalidate = await fetch("/api/revalidate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify([profile.username, myProfile.username]),
+    });
   };
 
   const unfollow = async () => {
-    setButtonAction("follow");
     const removeFollower = await fetch("api/profile/follow", {
       method: "DELETE",
       headers: {
@@ -69,15 +65,6 @@ export default function FollowButton({ profile }) {
       }),
     });
 
-    const revalidate = await fetch("/api/revalidate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify([profile.username, myProfile.username]),
-    });
-
-    // update client, until user refreshes to get new updated props
     const oldFollowing = [...myProfile.following];
     const newFollowing = oldFollowing.filter((value) => {
       return (
@@ -90,6 +77,15 @@ export default function FollowButton({ profile }) {
     });
 
     setMyProfile({ ...myProfile, following: newFollowing });
+    setButtonClick(nanoid());
+
+    const revalidate = await fetch("/api/revalidate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify([profile.username, myProfile.username]),
+    });
   };
 
   if (buttonAction === "Hide") {

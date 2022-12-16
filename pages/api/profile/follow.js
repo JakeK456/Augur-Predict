@@ -2,6 +2,27 @@ import { prisma } from "@/lib/prisma";
 
 export default async function handler(req, res) {
   switch (req.method) {
+    case "GET":
+      try {
+        const { username } = req.query;
+        const profile = await prisma.profile.findUnique({
+          where: { username },
+          include: {
+            followers: true,
+            following: true,
+          },
+        });
+
+        res
+          .status(200)
+          .json({
+            followers: profile?.followers,
+            following: profile?.following,
+          });
+      } catch (error) {
+        res.status(500).json({ error });
+      }
+      break;
     case "POST":
       try {
         const { name, targetName } = req.body;
