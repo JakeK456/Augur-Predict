@@ -4,10 +4,20 @@ import ProfileNav from "@/components/profile/ProfileNav";
 import ProfileSummary from "@/components/profile/ProfileSummary";
 import { prisma } from "@/lib/prisma";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 export default function Profile({ profile = null, followers, following }) {
   const { data: session, status } = useSession();
   const user = session?.user;
+  const router = useRouter();
+
+  if (router.isFallback) {
+    return (
+      <div className="text-white">
+        Please wait, your profile page is being created.
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -44,7 +54,7 @@ export async function getStaticPaths() {
     paths: profiles.map((profile) => ({
       params: { id: profile.username },
     })),
-    fallback: false,
+    fallback: true,
   };
 }
 
