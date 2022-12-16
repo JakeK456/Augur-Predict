@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function MainNav() {
   return (
-    <nav className="hidden lg:block m-auto basis-3/5">
+    <nav className="hidden md:block m-auto basis-3/5">
       <ul className="flex justify-center content-center">
         <li className="m-4">
           <Link href="/" className="text-dark-theme-3">

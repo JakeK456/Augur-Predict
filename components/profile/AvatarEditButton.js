@@ -85,7 +85,7 @@ export default function AvatarEditButton({ profile, setRerender }) {
   return (
     <div ref={ref}>
       <button
-        className="flex absolute bottom-6 left-8 px-2 py-1 bg-white  rounded-md border items-center shadow-xl"
+        className="flex absolute bottom-0 left-0 md:bottom-6 md:left-8 px-2 py-1 bg-white rounded-md border items-center shadow-xl"
         onClick={() => {
           setIsExpanded(!isExpanded);
         }}
@@ -94,7 +94,7 @@ export default function AvatarEditButton({ profile, setRerender }) {
         Edit
       </button>
       {isExpanded && (
-        <div className="absolute bottom-4 left-6 w-40">
+        <div className="absolute left-0 -bottom-2 md:bottom-4 md:left-6 w-40">
           <ul className="absolute py-1 border rounded bg-white shadow-xl">
             <li className="hover:bg-blue-500 hover:text-white cursor-pointer py-1 pl-2 pr-8">
               <label htmlFor="file-upload">Upload a photo</label>

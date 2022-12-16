@@ -19,10 +19,10 @@ export default function HamburgerIcon() {
     <>
       <div
         ref={ref}
-        className="lg:hidden basis-1/5 justify-self-start flex items-center justify-start p-4"
+        className="md:hidden basis-1/5 justify-self-start flex items-center justify-start p-4"
       >
         <div
-          className="cursor-pointer space-y-2 lg:hidden"
+          className="cursor-pointer space-y-2 md:hidden"
           onClick={(event) => {
             setIsOpen(!isOpen);
           }}

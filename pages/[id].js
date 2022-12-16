@@ -27,33 +27,56 @@ export default function Profile({ profile = null }) {
 
   return (
     <div>
-      {/* Top Nav */}
-      <div className="h-20 border-b border-dark-bg-border">
-        <div className="m-auto flex max-w-screen-xl h-full">
-          <div className="w-80 shrink-0 h-full"></div>
-          <div className="flex items-end grow shrink h-full px-2 py-1">
-            <ProfileNav />
+      {/* Mobile */}
+      <div className="md:hidden">
+        <ProfileSummary
+          profile={profile}
+          user={user}
+          followers={followers}
+          following={following}
+          setButtonClick={setButtonClick}
+        />
+        <div className="h-[37px] border-b border-dark-bg-border">
+          <ProfileNav />
+        </div>
+        <ProfileMainContainer
+          profile={profile}
+          followers={followers}
+          following={following}
+          setButtonClick={setButtonClick}
+        />
+      </div>
+
+      {/* Tablet and Above */}
+      <div className="hidden md:block">
+        {/* Top Nav */}
+        <div className="h-20 border-b border-dark-bg-border">
+          <div className="m-auto flex max-w-screen-xl h-full">
+            <div className="w-80 shrink-0 h-full"></div>
+            <div className="flex items-end grow shrink h-full px-2 py-1">
+              <ProfileNav />
+            </div>
           </div>
         </div>
-      </div>
-      {/* Below Nav */}
-      <div className="m-auto flex max-w-screen-xl h-screen">
-        <div className="w-80 shrink-0 h-full">
-          <ProfileSummary
-            profile={profile}
-            user={user}
-            followers={followers}
-            following={following}
-            setButtonClick={setButtonClick}
-          />
-        </div>
-        <div className="ml-4 grow shrink h-full">
-          <ProfileMainContainer
-            profile={profile}
-            followers={followers}
-            following={following}
-            setButtonClick={setButtonClick}
-          />
+        {/* Below Nav */}
+        <div className="m-auto flex max-w-screen-xl h-screen">
+          <div className="w-80 shrink-0 h-full">
+            <ProfileSummary
+              profile={profile}
+              user={user}
+              followers={followers}
+              following={following}
+              setButtonClick={setButtonClick}
+            />
+          </div>
+          <div className="ml-4 grow shrink h-full">
+            <ProfileMainContainer
+              profile={profile}
+              followers={followers}
+              following={following}
+              setButtonClick={setButtonClick}
+            />
+          </div>
         </div>
       </div>
     </div>

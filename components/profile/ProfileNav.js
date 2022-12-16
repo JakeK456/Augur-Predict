@@ -20,11 +20,11 @@ export default function ProfileNav() {
         )}
       </Link>
       <Link
-        className="relative flex mx-4 px-2 py-1 text-dark-bg-text-1 font-bold cursor-pointer rounded-lg hover:bg-dark-bg-hover"
+        className="relative mx-4 py-1 px-2 text-dark-bg-text-1 font-bold cursor-pointer rounded-lg hover:bg-dark-bg-hover"
         href={`/${router.query.id}?tab=predictions`}
       >
         <div className="flex">
-          <AiOutlineLineChart className="text-dark-bg-text-1  my-auto mr-2 w-5 h-5" />
+          <AiOutlineLineChart className="text-dark-bg-text-1 my-auto mr-2 w-5 h-5" />
           Predictions
         </div>
         {router.query.tab === "predictions" && (
