@@ -15,13 +15,15 @@ export default function Profile({ profile = null }) {
 
   useEffect(() => {
     const fetchFollows = async () => {
-      const res = await fetch(`/api/profile/list?username=${profile.username}`);
+      const res = await fetch(
+        `/api/profile/list?username=${profile?.username}`
+      );
       const follows = await res.json();
       setFollowers(follows.followerProfiles);
       setFollowing(follows.followingProfiles);
     };
     fetchFollows();
-  }, [profile.username, buttonClick]);
+  }, [profile?.username, buttonClick]);
 
   return (
     <div>
