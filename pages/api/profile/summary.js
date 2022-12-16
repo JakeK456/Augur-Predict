@@ -10,11 +10,14 @@ export default async function handler(req, res) {
           where: {
             userId,
           },
+          include: {
+            followers: true,
+            following: true,
+          },
         });
       }
       res.status(200).json(profile);
     } catch (error) {
-      console.log(error);
       res.status(500).json({ message: "Something went wrong" });
     }
   }

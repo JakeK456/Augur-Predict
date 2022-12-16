@@ -25,7 +25,7 @@ export default function Profile({ profile = null, followers, following }) {
         <div className="w-80 shrink-0 h-full">
           <ProfileSummary profile={profile} user={user} />
         </div>
-        <div className="grow shrink h-full">
+        <div className="ml-4 grow shrink h-full">
           <ProfileMainContainer
             profile={profile}
             followers={followers}
@@ -34,24 +34,6 @@ export default function Profile({ profile = null, followers, following }) {
         </div>
       </div>
     </div>
-    // <div className="flex border-b border-dark-bg-border h-20">
-    //   <div className="basis-1/3"></div>
-    //   <div className="flex items-end basis-2/3">
-    //     <ProfileNav />
-    //   </div>
-    // </div>
-    // <div className="flex">
-    //   <div className="basis-1/3 flex justify-end">
-    //     <ProfileSummary profile={profile} user={user} />
-    //   </div>
-    //   <div className="basis-2/3 px-4">
-    //     <ProfileMainContainer
-    //       profile={profile}
-    //       followers={followers}
-    //       following={following}
-    //     />
-    //   </div>
-    // </div>
   );
 }
 

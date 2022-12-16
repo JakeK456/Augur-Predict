@@ -7,6 +7,7 @@ export function ProfileProvider({ children }) {
   const { data: session, status } = useSession();
   const user = session?.user;
   const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getProfile = async () => {
@@ -19,12 +20,19 @@ export function ProfileProvider({ children }) {
       });
       const resProfile = await res.json();
       setProfile(resProfile);
+      if (resProfile) {
+        setLoading(false);
+      }
     };
 
     getProfile();
   }, [user?.id]);
 
-  return <useProfile.Provider value={profile}>{children}</useProfile.Provider>;
+  return (
+    <useProfile.Provider value={[profile, loading]}>
+      {children}
+    </useProfile.Provider>
+  );
 }
 
 export function useProfileProvider() {
