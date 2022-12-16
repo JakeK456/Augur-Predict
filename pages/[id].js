@@ -11,14 +11,6 @@ export default function Profile({ profile = null, followers, following }) {
   const user = session?.user;
   const router = useRouter();
 
-  if (router.isFallback) {
-    return (
-      <div className="text-white">
-        Please wait, your profile page is being created.
-      </div>
-    );
-  }
-
   return (
     <div>
       {/* Top Nav */}

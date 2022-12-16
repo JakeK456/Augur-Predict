@@ -29,7 +29,7 @@ export function ProfileProvider({ children }) {
   }, [user?.id]);
 
   return (
-    <useProfile.Provider value={[profile, loading]}>
+    <useProfile.Provider value={[profile, setProfile, loading]}>
       {children}
     </useProfile.Provider>
   );

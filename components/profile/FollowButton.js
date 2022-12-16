@@ -2,8 +2,11 @@ import { useProfileProvider } from "hooks/ProfileProvider";
 import { useState, useEffect } from "react";
 
 export default function FollowButton({ profile }) {
-  const [myProfile, loading] = useProfileProvider();
+  const [myProfile, setMyProfile, loading] = useProfileProvider();
   const [buttonAction, setButtonAction] = useState();
+
+  console.log(myProfile);
+  console.log(profile);
 
   useEffect(() => {
     // loading or viewing own profile
@@ -23,7 +26,8 @@ export default function FollowButton({ profile }) {
   }, [loading, myProfile, profile]);
 
   const follow = async () => {
-    const addFollower = fetch("api/profile/follow", {
+    setButtonAction("Unfollow");
+    const addFollower = await fetch("api/profile/follow", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -39,14 +43,22 @@ export default function FollowButton({ profile }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(profile.username),
+      body: JSON.stringify([profile.username, myProfile.username]),
     });
 
-    setButtonAction("Unfollow");
+    // update client, until user refreshes to get new updated props
+    let newFollowing = [...myProfile.following];
+    newFollowing.push({
+      followerName: myProfile.username,
+      followingName: profile.username,
+    });
+
+    setMyProfile({ ...myProfile, following: newFollowing });
   };
 
   const unfollow = async () => {
-    const removeFollower = fetch("api/profile/follow", {
+    setButtonAction("follow");
+    const removeFollower = await fetch("api/profile/follow", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -62,10 +74,22 @@ export default function FollowButton({ profile }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(profile.username),
+      body: JSON.stringify([profile.username, myProfile.username]),
     });
 
-    setButtonAction("follow");
+    // update client, until user refreshes to get new updated props
+    const oldFollowing = [...myProfile.following];
+    const newFollowing = oldFollowing.filter((value) => {
+      return (
+        JSON.stringify(value) !==
+        JSON.stringify({
+          followerName: myProfile.username,
+          followingName: profile.username,
+        })
+      );
+    });
+
+    setMyProfile({ ...myProfile, following: newFollowing });
   };
 
   if (buttonAction === "Hide") {

@@ -51,7 +51,7 @@ export default function AvatarEditButton({ profile, setRerender }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(profile.username),
+      body: JSON.stringify([profile.username]),
     });
 
     router.reload(window.location.pathname);
@@ -75,7 +75,7 @@ export default function AvatarEditButton({ profile, setRerender }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(profile.username),
+        body: JSON.stringify([profile.username]),
       });
 
       router.reload(window.location.pathname);

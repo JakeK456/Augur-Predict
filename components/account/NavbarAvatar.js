@@ -4,12 +4,14 @@ import AccountMenu from "./AccountMenu";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import defaultProfilePic from "../../public/default_profile_picture.png";
 import { useSession } from "next-auth/react";
+import { useProfileProvider } from "hooks/ProfileProvider";
 
 export default function NavbarAvatar() {
   const ref = useRef();
   const { data: session, status } = useSession();
   const user = session?.user;
   const [isOpen, setIsOpen] = useState(false);
+  const [profile, setProfile, loading] = useProfileProvider();
 
   useOutsideClick(ref, () => {
     if (isOpen) {

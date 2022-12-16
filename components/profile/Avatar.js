@@ -8,7 +8,7 @@ export default function Avatar({ size, profile, user }) {
         <Image
           className="aspect-square rounded-full border-2 border-gray-700 object-cover"
           loader={myLoader}
-          src={profile.avatar}
+          src={profile?.avatar}
           priority={true}
           alt="default profile picture"
           width={size}

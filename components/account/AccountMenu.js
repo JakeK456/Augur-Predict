@@ -4,7 +4,7 @@ import { useProfileProvider } from "hooks/ProfileProvider";
 import MenuProfileSummary from "./MenuProfileSummary";
 
 export default function AccountMenu({ user, isOpen }) {
-  const [profile, loading] = useProfileProvider();
+  const [profile, setProfile, loading] = useProfileProvider();
   return (
     <div
       className={`${

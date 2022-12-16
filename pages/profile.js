@@ -2,7 +2,8 @@ import Head from "next/head";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import Link from "next/link";
+import { useProfileProvider } from "hooks/ProfileProvider";
+import defaultProfilePic from "../public/default_profile_picture.png";
 
 const initialFormState = {
   firstName: "",
@@ -17,6 +18,7 @@ export default function Profile() {
   const { data: session, status } = useSession();
   const user = session?.user;
   const [formState, setFormState] = useState(initialFormState);
+  const [profile, setProfile, loading] = useProfileProvider();
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -39,6 +41,8 @@ export default function Profile() {
       },
       body: JSON.stringify(profileData),
     });
+
+    setProfile({ ...profileData, avatar: defaultProfilePic });
 
     router.push(`/${profileData.username}`, undefined, { shallow: true });
   };

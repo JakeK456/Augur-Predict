@@ -14,11 +14,11 @@ export default function ProfileMainContainer({
       return <ProfileList profiles={following} />;
     case "predictions":
       return (
-        <div className="mt-4 text-2xl text-dark-bg-text-1 text-center">{`${profile.firstName} ${profile.lastName}'s Prediction Page`}</div>
+        <div className="mt-4 text-2xl text-dark-bg-text-1 text-center">{`${profile?.firstName} ${profile?.lastName}'s Prediction Page`}</div>
       );
     default:
       return (
-        <div className="mt-4 text-2xl text-dark-bg-text-1 text-center">{`${profile.firstName} ${profile.lastName}'s Overview Page`}</div>
+        <div className="mt-4 text-2xl text-dark-bg-text-1 text-center">{`${profile?.firstName} ${profile?.lastName}'s Overview Page`}</div>
       );
   }
 }
