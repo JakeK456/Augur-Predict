@@ -19,12 +19,12 @@ export default function HamburgerMenu({ isOpen }) {
           </Link>
         </li>
         <li className="m-auto p-4 border-b border-dark-theme-3 w-full">
-          <Link href="/portfolio" className="text-dark-theme-6 pl-12">
+          <Link href="/" className="text-dark-theme-6 pl-12">
             Portfolio
           </Link>
         </li>
         <li className="m-auto p-4 w-full">
-          <Link href="/news" className="text-dark-theme-6 pl-12">
+          <Link href="/" className="text-dark-theme-6 pl-12">
             News
           </Link>
         </li>

@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const initialFormState = {
   firstName: "",
@@ -11,6 +12,7 @@ const initialFormState = {
 // THIS PAGE NEEDS TO BE BLOCKED EXCEPT FOR PEOPLE WITH A SESSION AND NO PROFILE!!!!
 
 export default function Profile() {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const user = session?.user;
   const [formState, setFormState] = useState(initialFormState);
@@ -35,6 +37,8 @@ export default function Profile() {
       },
       body: JSON.stringify(profileData),
     });
+
+    router.push(`/${formState.username.toLowerCase()}`);
   };
 
   return (
