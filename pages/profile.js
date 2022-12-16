@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const initialFormState = {
   firstName: "",
@@ -23,6 +24,7 @@ export default function Profile() {
   };
 
   const handleSubmit = async (event) => {
+    event.preventDefault();
     const profileData = {
       userId: user.id,
       username: formState.username.toLowerCase(),
@@ -38,9 +40,8 @@ export default function Profile() {
       body: JSON.stringify(profileData),
     });
 
-    router.push(`/${formState.username.toLowerCase()}`);
+    router.push(`/${profileData.username}`, undefined, { shallow: true });
   };
-
   return (
     <>
       <Head>

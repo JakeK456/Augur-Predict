@@ -22,8 +22,6 @@ export default function FollowButton({ profile }) {
     }
   }, [loading, myProfile, profile]);
 
-  console.log(buttonAction);
-
   const follow = async () => {
     const addFollower = fetch("api/profile/follow", {
       method: "POST",

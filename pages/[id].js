@@ -67,10 +67,9 @@ export async function getStaticProps({ params }) {
     },
   });
 
-  const followerProfiles = await getFollowers(resProfile);
-  const followingProfiles = await getFollowing(resProfile);
-
   if (resProfile) {
+    const followerProfiles = await getFollowers(resProfile);
+    const followingProfiles = await getFollowing(resProfile);
     return {
       props: {
         profile: JSON.parse(JSON.stringify(resProfile)),
