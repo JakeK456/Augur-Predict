@@ -10,6 +10,7 @@ export default function NavbarAvatar() {
   const ref = useRef();
   const { data: session, status } = useSession();
   const user = session?.user;
+  console.log(user);
   const [isOpen, setIsOpen] = useState(false);
   const [profile, setProfile, loading] = useProfileProvider();
 
@@ -19,32 +20,23 @@ export default function NavbarAvatar() {
     }
   });
 
+  if (loading) {
+    return <></>;
+  }
+
   return (
     <div className="relative mr-2">
       <div ref={ref} className="p-2">
-        {profile ? (
-          <Image
-            className="aspect-square cursor-pointer rounded-full border-2 border-gray-700 object-cover"
-            loader={myLoader}
-            src={profile.avatar}
-            placeholder="empty"
-            alt="profile picture"
-            width={48}
-            height={48}
-            onClick={() => setIsOpen(!isOpen)}
-          />
-        ) : (
-          <Image
-            className="aspect-square cursor-pointer rounded-full border-2 border-gray-700 object-cover"
-            loader={myLoader}
-            src={defaultProfilePic}
-            placeholder="empty"
-            alt="profile picture"
-            width={48}
-            height={48}
-            onClick={() => setIsOpen(!isOpen)}
-          />
-        )}
+        <Image
+          className="aspect-square cursor-pointer rounded-full border-2 border-gray-700 object-cover"
+          loader={myLoader}
+          src={profile.avatar}
+          placeholder="empty"
+          alt="profile picture"
+          width={48}
+          height={48}
+          onClick={() => setIsOpen(!isOpen)}
+        />
       </div>
       <AccountMenu user={user} isOpen={isOpen} />
     </div>

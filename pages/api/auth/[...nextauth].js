@@ -1,39 +1,106 @@
 import NextAuth from "next-auth";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
-import EmailProvider from "next-auth/providers/email";
-import GoogleProvider from "next-auth/providers/google";
-import nodemailer from "nodemailer";
-
-// Instantiate Prisma Client
+import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 
+let userAccount = null;
+const bcrypt = require("bcrypt");
+
+const confirmPasswordHash = (plainPassword, hashedPassword) => {
+  return new Promise((resolve) => {
+    bcrypt.compare(plainPassword, hashedPassword, function (err, res) {
+      resolve(res);
+    });
+  });
+};
+
 export default NextAuth({
+  cookie: {
+    secure: process.env.NODE_ENV && process.env.NODE_ENV === "production",
+  },
+  session: {
+    jwt: true,
+    maxAge: 30 * 24 * 60 * 60,
+  },
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
-    }),
-    EmailProvider({
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
+    CredentialsProvider({
+      id: "credentials",
+      name: "credentials",
+      credentials: {},
+      async authorize(credentials) {
+        try {
+          const user = await prisma.user.findUnique({
+            where: {
+              email: credentials.email,
+            },
+          });
+
+          if (!user) {
+            return null;
+          }
+
+          const correctPassword = await confirmPasswordHash(
+            credentials.password,
+            user.password
+          );
+
+          if (!correctPassword) {
+            return null;
+          }
+
+          userAccount = {
+            id: user.id,
+            email: user.email,
+            isActive: user.isActive,
+          };
+          return userAccount;
+        } catch (err) {
+          console.log("Authorize error:", err);
+        }
+      },
     }),
   ],
-  adapter: PrismaAdapter(prisma),
   callbacks: {
-    async session({ session, token, user }) {
-      session = {
-        ...session,
-        user: {
-          id: user.id,
-          ...session.user,
-        },
-      };
+    async signIn(user, account, profile) {
+      try {
+        user = user.user;
+        if (user.id) {
+          if (user.isActive === "1") {
+            return user;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } catch (err) {
+        console.error("Signin callback error:", err);
+      }
+    },
+    async session(session, token) {
+      if (userAccount !== null) {
+        session.user = userAccount;
+      } else if (
+        typeof token.user !== typeof undefined &&
+        (typeof session.user === typeof undefined ||
+          (typeof session.user !== typeof undefined &&
+            typeof session.user.userId === typeof undefined))
+      ) {
+        session.user = token.user;
+      } else if (typeof token !== typeof undefined) {
+        session.token = token;
+      }
       return session;
+    },
+    async jwt(token, user, account, profile, isNewUser) {
+      console.log("JWT callback. Got User: ", user);
+      if (typeof user !== typeof undefined) {
+        token.user = user;
+      }
+      return token;
     },
   },
   pages: {
-    // signIn: '/auth/signin',
+    signIn: "/auth/signin",
     // signOut: "/",
     // error: '/auth/error', // Error code passed in query string as ?error=
     // verifyRequest: '/auth/verify-request', // (used for check email message)
