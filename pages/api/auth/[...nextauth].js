@@ -18,7 +18,7 @@ export default NextAuth({
     secure: process.env.NODE_ENV && process.env.NODE_ENV === "production",
   },
   session: {
-    jwt: true,
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60,
   },
   providers: [
@@ -76,27 +76,9 @@ export default NextAuth({
         console.error("Signin callback error:", err);
       }
     },
-    async session(session, token) {
-      if (userAccount !== null) {
-        session.user = userAccount;
-      } else if (
-        typeof token.user !== typeof undefined &&
-        (typeof session.user === typeof undefined ||
-          (typeof session.user !== typeof undefined &&
-            typeof session.user.userId === typeof undefined))
-      ) {
-        session.user = token.user;
-      } else if (typeof token !== typeof undefined) {
-        session.token = token;
-      }
+    async session({ session, token }) {
+      session.user.id = token.sub;
       return session;
-    },
-    async jwt(token, user, account, profile, isNewUser) {
-      console.log("JWT callback. Got User: ", user);
-      if (typeof user !== typeof undefined) {
-        token.user = user;
-      }
-      return token;
     },
   },
   pages: {

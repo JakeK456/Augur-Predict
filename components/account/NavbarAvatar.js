@@ -10,7 +10,6 @@ export default function NavbarAvatar() {
   const ref = useRef();
   const { data: session, status } = useSession();
   const user = session?.user;
-  console.log(user);
   const [isOpen, setIsOpen] = useState(false);
   const [profile, setProfile, loading] = useProfileProvider();
 

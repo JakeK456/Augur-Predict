@@ -13,7 +13,7 @@ module.exports = {
         "dark-theme-4": "#519872",
         "dark-theme-5": "#A4B494",
         "dark-theme-6": "#E9EAEA",
-        "dark-theme-green": "#6DD35E",
+        "dark-theme-green": "#238636",
         "dark-theme-green-op": "#1C2E2A",
         "dark-theme-blue": "#2F91E7",
         "dark-theme-border": "#30363D",

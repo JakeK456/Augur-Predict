@@ -5,6 +5,7 @@ import MenuProfileSummary from "./MenuProfileSummary";
 
 export default function AccountMenu({ user, isOpen }) {
   const [profile, setProfile, loading] = useProfileProvider();
+
   return (
     <div
       className={`${
@@ -19,7 +20,7 @@ export default function AccountMenu({ user, isOpen }) {
         <li className="flex h-12 py-2 border-b border-dark-theme-border">
           {profile ? (
             <Link
-              href={`${profile.username}`}
+              href={`/${profile.username}`}
               className="flex items-center grow pl-4 text-sm text-dark-theme-6 hover:text-dark-hover-text hover:bg-dark-surface-hover"
             >
               Profile
@@ -44,7 +45,9 @@ export default function AccountMenu({ user, isOpen }) {
         <li className="flex h-12 py-2">
           <button
             className="flex items-center grow pl-4 text-sm text-dark-theme-6 hover:text-dark-hover-text hover:bg-dark-surface-hover"
-            onClick={signOut}
+            onClick={() => {
+              signOut({ callbackUrl: "/" });
+            }}
           >
             Sign Out
           </button>

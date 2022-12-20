@@ -10,6 +10,9 @@ const defaultAvatarURL = `${process.env.SUPABASE_URL.replace(
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
+    const { valid, reasons } = validate(req.body);
+    if (!valid) return res.status(406).json(reasons);
+
     const { firstName, lastName, username, email, password } = req.body;
 
     try {
@@ -31,13 +34,68 @@ export default async function handler(req, res) {
         },
       });
 
-      return res.status(200).end();
+      return res.status(200).json({ success: true });
     } catch (err) {
       return res.status(503).json({ err: err.toString() });
     }
+  } else if (req.method === "GET") {
+    const { username, email } = req.query;
+
+    if (username) {
+      const matchingProfiles = await prisma.profile.findMany({
+        where: {
+          username: {
+            equals: username,
+            mode: "insensitive",
+          },
+        },
+      });
+      if (matchingProfiles.length > 0) {
+        return res.status(406).json({ available: false });
+      }
+    }
+
+    if (email) {
+      const matchingEmails = await prisma.user.findMany({
+        where: {
+          email: {
+            equals: email,
+            mode: "insensitive",
+          },
+        },
+      });
+      if (matchingEmails.length > 0) {
+        return res.status(406).json({ available: false });
+      }
+    }
+
+    res.status(200).json({ available: true });
   } else {
     return res
       .status(405)
       .json({ error: "This request only supports POST requests" });
   }
 }
+
+const namePattern = /^(?:[a-zA-Z]{1,16})$/;
+const usernamePattern = /^(?:[a-zA-Z0-9]{4,16})$/;
+const emailPattern =
+  /^(?:[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*)$/;
+const passwordPattern = /^(?:[\S]{8,16})$/;
+
+const validate = (body) => {
+  const { firstName, lastName, username, email, password } = body;
+  let reasons = [];
+
+  !firstName.match(namePattern) && reasons.push("Invalid First Name");
+  !lastName.match(namePattern) && reasons.push("Invalid Last Name");
+  !username.match(usernamePattern) && reasons.push("Invalid Username");
+  !email.match(emailPattern) && reasons.push("Invalid Email");
+  !password.match(passwordPattern) && reasons.push("Invalid Password");
+
+  if (reasons.length > 0) {
+    return { valid: false, reasons };
+  } else {
+    return { valid: true, reasons };
+  }
+};
