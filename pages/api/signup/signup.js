@@ -38,38 +38,6 @@ export default async function handler(req, res) {
     } catch (err) {
       return res.status(503).json({ err: err.toString() });
     }
-  } else if (req.method === "GET") {
-    const { username, email } = req.query;
-
-    if (username) {
-      const matchingProfiles = await prisma.profile.findMany({
-        where: {
-          username: {
-            equals: username,
-            mode: "insensitive",
-          },
-        },
-      });
-      if (matchingProfiles.length > 0) {
-        return res.status(406).json({ available: false });
-      }
-    }
-
-    if (email) {
-      const matchingEmails = await prisma.user.findMany({
-        where: {
-          email: {
-            equals: email,
-            mode: "insensitive",
-          },
-        },
-      });
-      if (matchingEmails.length > 0) {
-        return res.status(406).json({ available: false });
-      }
-    }
-
-    res.status(200).json({ available: true });
   } else {
     return res
       .status(405)

@@ -15,7 +15,15 @@ export default function SignUpPage() {
     event.preventDefault();
     setUsername(event.target.value);
 
-    const res = await fetch(`/api/signup?username=${event.target.value}`);
+    const res = await fetch(`/api/signup/username`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: event.target.value,
+      }),
+    });
     const { available } = await res.json();
     setUsernameAvailable(available);
   };
@@ -24,7 +32,15 @@ export default function SignUpPage() {
     event.preventDefault();
     setEmail(event.target.value);
 
-    const res = await fetch(`/api/signup?email=${event.target.value}`);
+    const res = await fetch(`/api/signup/email`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: event.target.value,
+      }),
+    });
     const { available } = await res.json();
     setEmailAvailable(available);
   };
@@ -35,7 +51,7 @@ export default function SignUpPage() {
       return;
     }
 
-    const res = await fetch("/api/signup", {
+    const res = await fetch("/api/signup/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
