@@ -11,7 +11,7 @@ const defaultAvatarURL = `${process.env.SUPABASE_URL.replace(
 export default async function handler(req, res) {
   if (req.method === "POST") {
     const { valid, reasons } = validate(req.body);
-    if (!valid) return res.status(406).json(reasons);
+    if (!valid) return res.status(406).json({ reasons });
 
     const { firstName, lastName, username, email, password } = req.body;
 
