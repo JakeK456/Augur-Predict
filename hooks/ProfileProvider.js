@@ -9,8 +9,6 @@ export function ProfileProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  console.log(session);
-
   useEffect(() => {
     const getProfile = async () => {
       const res = await fetch("/api/profile/summary", {
