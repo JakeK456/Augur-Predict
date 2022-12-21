@@ -1,8 +1,7 @@
 import Image from "next/image";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import AccountMenu from "./AccountMenu";
 import useOutsideClick from "../../hooks/useOutsideClick";
-import defaultProfilePic from "../../public/default_profile_picture.png";
 import { useSession } from "next-auth/react";
 import { useProfileProvider } from "hooks/ProfileProvider";
 

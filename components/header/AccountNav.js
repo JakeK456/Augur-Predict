@@ -9,7 +9,7 @@ export default function AccountNav() {
     return <></>;
   }
   return (
-    <div className="basis-1/5 flex justify-end">
+    <div className="shrink-0 flex justify-end">
       {session ? <NavbarAvatar /> : <AccountNavSignInButton />}
     </div>
   );
