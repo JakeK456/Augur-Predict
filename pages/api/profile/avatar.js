@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     return res.status(200).json(avatarURL.avatar);
   } else if (req.method === "POST") {
     const { image, profile } = req.body;
-
+    console.log("Into avatar post", profile);
     if (!image) {
       return res.status(500).json({ message: "No image provided" });
     }
@@ -100,6 +100,7 @@ export default async function handler(req, res) {
 
       return res.status(200).json({ url });
     } catch (e) {
+      console.log(e);
       res.status(500).json({ message: "Something went wrong" });
     }
   } else if (req.method === "DELETE") {
