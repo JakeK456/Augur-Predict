@@ -1,5 +1,9 @@
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import ProfileList from "./ProfileList";
+import { useSession } from "next-auth/react";
+import MakePredictionContainer from "../prediction/MakePredictionContainer";
+import PredictionContainer from "../prediction/PredictionContainer";
 
 export default function ProfileMainContainer({
   profile,
@@ -8,6 +12,8 @@ export default function ProfileMainContainer({
   setButtonClick,
 }) {
   const router = useRouter();
+  const { data: session, status } = useSession();
+  const user = session?.user;
 
   switch (router.query.tab) {
     case "followers":
@@ -20,11 +26,29 @@ export default function ProfileMainContainer({
       );
     case "predictions":
       return (
-        <div className="mt-4 text-2xl text-dark-bg-text-1 text-center">{`${profile?.firstName} ${profile?.lastName}'s Prediction Page`}</div>
+        <PredictionContainer
+          openPredictions={profile?.openPredictions}
+          closedPredictions={profile?.closedPredictions}
+        />
       );
+    case "make-prediction":
+      if (status === "loading") {
+        return <></>;
+      }
+      if (user.id !== profile.userId) {
+        router.push(`${profile.username}`);
+      }
+      return <MakePredictionContainer />;
     default:
       return (
-        <div className="mt-4 text-2xl text-dark-bg-text-1 text-center">{`${profile?.firstName} ${profile?.lastName}'s Overview Page`}</div>
+        <div className="mt-4 text-md text-dark-bg-text-1">
+          <h3>Pinned Predictions</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-4 w-full border">
+            <div className="border aspect-video">{/* <Graph /> */}</div>
+            <div className="border aspect-video">{/* <Graph /> */}</div>
+            <div className="border aspect-video">{/* <Graph /> */}</div>
+          </div>
+        </div>
       );
   }
 }

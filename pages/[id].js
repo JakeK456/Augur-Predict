@@ -4,6 +4,9 @@ import ProfileSummary from "@/components/profile/ProfileSummary";
 import { prisma } from "@/lib/prisma";
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
+// import useSWR from "swr";
+
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 export default function Profile({ profile = null }) {
   const { data: session, status } = useSession();
@@ -12,6 +15,13 @@ export default function Profile({ profile = null }) {
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
   const [buttonClick, setButtonClick] = useState();
+
+  // const { data, error } = useSWR(
+  //   `/api/profile/list?username=${profile?.username}`,
+  //   fetcher
+  // );
+  // if (error) return <div>Failed to load</div>;
+  // if (!data) return <div>Loading...</div>;
 
   useEffect(() => {
     const fetchFollows = async () => {
@@ -97,12 +107,22 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const resProfile = await prisma.profile.findUnique({
     where: { username: params.id },
+    include: {
+      openPredictions: true,
+      closedPredictions: true,
+    },
   });
 
   if (resProfile) {
     return {
       props: {
-        profile: JSON.parse(JSON.stringify(resProfile)),
+        profile: JSON.parse(
+          JSON.stringify(
+            resProfile,
+            (key, value) =>
+              typeof value === "bigint" ? value.toString() : value // return everything else unchanged
+          )
+        ),
       },
     };
   }
