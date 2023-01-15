@@ -1,18 +1,18 @@
-import { useProfileProvider } from "hooks/ProfileProvider";
 import { useState, useEffect } from "react";
-import { nanoid } from "nanoid";
+import { useSession } from "next-auth/react";
 
-export default function FollowButton({ profile, setButtonClick }) {
-  const [myProfile, setMyProfile, loading] = useProfileProvider();
+export default function FollowButton({ profile }) {
+  const { data: session, status } = useSession();
+  const user = session?.user;
   const [buttonAction, setButtonAction] = useState();
 
   useEffect(() => {
     // loading or viewing own profile
-    if (loading || myProfile.id === profile.id) {
+    if (status === "loading" || user.profile.username === profile.username) {
       setButtonAction("Hide");
     } else if (
       // viewing profile of somebody your following
-      myProfile.following.some((follow) => {
+      user.profile.following.some((follow) => {
         return follow.followingName === profile.username;
       })
     ) {
@@ -21,71 +21,57 @@ export default function FollowButton({ profile, setButtonClick }) {
       // else, viewing profile of somebody your not following
       setButtonAction("Follow");
     }
-  }, [loading, myProfile, profile]);
+  }, [
+    status,
+    user?.profile.username,
+    profile.username,
+    user?.profile.following,
+  ]);
 
   const follow = async () => {
+    setButtonAction("Unfollow");
     const addFollower = await fetch("api/profile/follow", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: myProfile?.username,
+        name: user.profile.username,
         targetName: profile?.username,
       }),
     });
-
-    let newFollowing = [...myProfile.following];
-    newFollowing.push({
-      followerName: myProfile.username,
-      followingName: profile.username,
-    });
-
-    setMyProfile({ ...myProfile, following: newFollowing });
-    setButtonClick(nanoid());
 
     const revalidate = await fetch("/api/revalidate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify([profile.username, myProfile.username]),
+      body: JSON.stringify([profile.username, user.profile.username]),
     });
+    refreshSession();
   };
 
   const unfollow = async () => {
+    setButtonAction("Follow");
     const removeFollower = await fetch("api/profile/follow", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: myProfile?.username,
+        name: user.profile.username,
         targetName: profile?.username,
       }),
     });
-
-    const oldFollowing = [...myProfile.following];
-    const newFollowing = oldFollowing.filter((value) => {
-      return (
-        JSON.stringify(value) !==
-        JSON.stringify({
-          followerName: myProfile.username,
-          followingName: profile.username,
-        })
-      );
-    });
-
-    setMyProfile({ ...myProfile, following: newFollowing });
-    setButtonClick(nanoid());
 
     const revalidate = await fetch("/api/revalidate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify([profile.username, myProfile.username]),
+      body: JSON.stringify([profile.username, user.profile.username]),
     });
+    refreshSession();
   };
 
   if (buttonAction === "Hide") {
@@ -112,3 +98,8 @@ export default function FollowButton({ profile, setButtonClick }) {
     </button>
   );
 }
+
+const refreshSession = () => {
+  const event = new Event("visibilitychange");
+  document.dispatchEvent(event);
+};

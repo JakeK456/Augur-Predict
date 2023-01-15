@@ -78,7 +78,21 @@ export default NextAuth({
     },
     async session({ session, token }) {
       session.user.id = token.sub;
+      session.user.profile = token.profile;
       return session;
+    },
+    async jwt({ token }) {
+      const profile = await prisma.profile.findUnique({
+        where: {
+          userId: token.sub,
+        },
+        include: {
+          followers: true,
+          following: true,
+        },
+      });
+      token.profile = profile;
+      return token;
     },
   },
   pages: {

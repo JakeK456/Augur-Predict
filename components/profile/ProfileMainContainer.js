@@ -9,7 +9,6 @@ export default function ProfileMainContainer({
   profile,
   followers,
   following,
-  setButtonClick,
 }) {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -17,13 +16,9 @@ export default function ProfileMainContainer({
 
   switch (router.query.tab) {
     case "followers":
-      return (
-        <ProfileList profiles={followers} setButtonClick={setButtonClick} />
-      );
+      return <ProfileList profiles={followers} />;
     case "following":
-      return (
-        <ProfileList profiles={following} setButtonClick={setButtonClick} />
-      );
+      return <ProfileList profiles={following} />;
     case "predictions":
       return (
         <PredictionContainer

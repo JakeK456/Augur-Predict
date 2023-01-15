@@ -2,49 +2,16 @@ import ProfileMainContainer from "@/components/profile/ProfileMainContainer";
 import ProfileNav from "@/components/profile/ProfileNav";
 import ProfileSummary from "@/components/profile/ProfileSummary";
 import { prisma } from "@/lib/prisma";
-import { useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
-// import useSWR from "swr";
 
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
-
-export default function Profile({ profile = null }) {
-  const { data: session, status } = useSession();
-  const user = session?.user;
-
-  const [followers, setFollowers] = useState([]);
-  const [following, setFollowing] = useState([]);
-  const [buttonClick, setButtonClick] = useState();
-
-  // const { data, error } = useSWR(
-  //   `/api/profile/list?username=${profile?.username}`,
-  //   fetcher
-  // );
-  // if (error) return <div>Failed to load</div>;
-  // if (!data) return <div>Loading...</div>;
-
-  useEffect(() => {
-    const fetchFollows = async () => {
-      const res = await fetch(
-        `/api/profile/list?username=${profile?.username}`
-      );
-      const follows = await res.json();
-      setFollowers(follows.followerProfiles);
-      setFollowing(follows.followingProfiles);
-    };
-    fetchFollows();
-  }, [profile?.username, buttonClick]);
-
+export default function Profile({ profile = null, followers, following }) {
   return (
     <div>
       {/* Mobile */}
       <div className="md:hidden">
         <ProfileSummary
           profile={profile}
-          user={user}
           followers={followers}
           following={following}
-          setButtonClick={setButtonClick}
         />
         <div className="h-[37px] border-b border-dark-bg-border">
           <ProfileNav />
@@ -53,7 +20,6 @@ export default function Profile({ profile = null }) {
           profile={profile}
           followers={followers}
           following={following}
-          setButtonClick={setButtonClick}
         />
       </div>
 
@@ -73,10 +39,8 @@ export default function Profile({ profile = null }) {
           <div className="w-80 shrink-0 h-full">
             <ProfileSummary
               profile={profile}
-              user={user}
               followers={followers}
               following={following}
-              setButtonClick={setButtonClick}
             />
           </div>
           <div className="ml-4 grow shrink h-full">
@@ -84,7 +48,6 @@ export default function Profile({ profile = null }) {
               profile={profile}
               followers={followers}
               following={following}
-              setButtonClick={setButtonClick}
             />
           </div>
         </div>
@@ -108,12 +71,16 @@ export async function getStaticProps({ params }) {
   const resProfile = await prisma.profile.findUnique({
     where: { username: params.id },
     include: {
+      followers: true,
+      following: true,
       openPredictions: true,
       closedPredictions: true,
     },
   });
 
   if (resProfile) {
+    const followerProfiles = await getFollowers(resProfile);
+    const followingProfiles = await getFollowing(resProfile);
     return {
       props: {
         profile: JSON.parse(
@@ -123,6 +90,8 @@ export async function getStaticProps({ params }) {
               typeof value === "bigint" ? value.toString() : value // return everything else unchanged
           )
         ),
+        followers: followerProfiles,
+        following: followingProfiles,
       },
     };
   }
@@ -134,3 +103,31 @@ export async function getStaticProps({ params }) {
     },
   };
 }
+
+const getFollowers = async (resProfile) => {
+  let followerProfiles = [];
+  for (let index = 0; index < resProfile.followers.length; index++) {
+    const { followerName } = resProfile.followers[index];
+    const profile = await prisma.profile.findUnique({
+      where: {
+        username: followerName,
+      },
+    });
+    followerProfiles.push(JSON.parse(JSON.stringify(profile)));
+  }
+  return followerProfiles;
+};
+
+const getFollowing = async (resProfile) => {
+  let followingProfiles = [];
+  for (let index = 0; index < resProfile.following.length; index++) {
+    const { followingName } = resProfile.following[index];
+    const profile = await prisma.profile.findUnique({
+      where: {
+        username: followingName,
+      },
+    });
+    followingProfiles.push(JSON.parse(JSON.stringify(profile)));
+  }
+  return followingProfiles;
+};

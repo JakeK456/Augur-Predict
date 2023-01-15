@@ -3,15 +3,12 @@ import Avatar from "./Avatar";
 import FollowButton from "./FollowButton";
 import FollowDetails from "./FollowDetails";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
-export default function ProfileSummary({
-  user,
-  profile,
-  followers,
-  following,
-  setButtonClick,
-}) {
+export default function ProfileSummary({ profile, followers, following }) {
   const router = useRouter();
+  const { data: session, status } = useSession();
+  const user = session?.user;
   return (
     <div className="p-4 md:p-2 md:-mt-10">
       <div className="flex md:block">
@@ -26,7 +23,7 @@ export default function ProfileSummary({
         </div>
       </div>
       <div className="mt-4">
-        <FollowButton profile={profile} setButtonClick={setButtonClick} />
+        <FollowButton profile={profile} />
       </div>
       <FollowDetails followers={followers} following={following} />
       {user?.id === profile?.userId &&
