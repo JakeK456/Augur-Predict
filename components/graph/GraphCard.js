@@ -43,12 +43,8 @@ export default function GraphCard({ graphData }) {
           color: "#6E767E",
           maxTicksLimit: 7,
         },
-        min: chartRef.current
-          ? chartRef.current.scales.x.min
-          : graphBounds.xMin,
-        max: chartRef.current
-          ? chartRef.current.scales.x.max
-          : graphBounds.xMax + graphBounds.xPadding,
+        min: graphBounds.xMin,
+        max: graphBounds.xMax + graphBounds.xPadding,
         grid: {
           color: "#13181E",
         },
@@ -60,12 +56,8 @@ export default function GraphCard({ graphData }) {
             return Math.floor(val);
           },
         },
-        min: chartRef.current
-          ? chartRef.current.scales.y.min
-          : graphBounds.yMin - graphBounds.yPadding,
-        max: chartRef.current
-          ? chartRef.current.scales.y.max
-          : graphBounds.yMax + graphBounds.yPadding,
+        min: graphBounds.yMin - graphBounds.yPadding,
+        max: graphBounds.yMax + graphBounds.yPadding,
         grid: {
           color: "#13181E",
         },
@@ -94,8 +86,8 @@ export default function GraphCard({ graphData }) {
   };
 
   return (
-    <div className="object-contain">
-      <Line options={options} data={graphData} />;
+    <div className="object-contain border border-dark-theme-border rounded-2xl p-2">
+      <Line options={options} data={graphData} />
     </div>
   );
 }

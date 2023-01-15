@@ -13,6 +13,7 @@ export default function SearchBar() {
     if (isOpen) {
       setIsOpen(false);
     }
+    setSearch("");
   });
 
   const handleSearchChange = async (event) => {

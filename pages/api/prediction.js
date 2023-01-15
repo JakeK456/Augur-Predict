@@ -28,7 +28,8 @@ export default async function handler(req, res) {
 
         const { ticker, predictionData } = req.body;
         const coordinates = JSON.stringify(predictionData);
-        const startTime = predictionData[0].x;
+        // const startTime = predictionData[0].x;
+        const startTime = Date.now();
         const endTime = predictionData[predictionData.length - 1].x;
         const prediction = await prisma.openPrediction.create({
           data: {

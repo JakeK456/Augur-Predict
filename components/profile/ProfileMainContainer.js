@@ -10,6 +10,7 @@ export default function ProfileMainContainer({
   followers,
   following,
   setButtonClick,
+  recentPredictions,
 }) {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -25,12 +26,7 @@ export default function ProfileMainContainer({
         <ProfileList profiles={following} setButtonClick={setButtonClick} />
       );
     case "predictions":
-      return (
-        <PredictionContainer
-          openPredictions={profile?.openPredictions}
-          closedPredictions={profile?.closedPredictions}
-        />
-      );
+      return <PredictionContainer recentPredictions={recentPredictions} />;
     case "make-prediction":
       if (status === "loading") {
         return <></>;
