@@ -4,8 +4,9 @@ import ProfileSummary from "@/components/profile/ProfileSummary";
 import { prisma } from "@/lib/prisma";
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
+const moment = require("moment");
 
-export default function Profile({ profile = null }) {
+export default function Profile({ profile = null, recentPredictions }) {
   const { data: session, status } = useSession();
   const user = session?.user;
 
@@ -44,6 +45,7 @@ export default function Profile({ profile = null }) {
           followers={followers}
           following={following}
           setButtonClick={setButtonClick}
+          recentPredictions={recentPredictions}
         />
       </div>
 
@@ -75,6 +77,7 @@ export default function Profile({ profile = null }) {
               followers={followers}
               following={following}
               setButtonClick={setButtonClick}
+              recentPredictions={recentPredictions}
             />
           </div>
         </div>
@@ -95,14 +98,68 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
+  let graphData = [];
+
   const resProfile = await prisma.profile.findUnique({
     where: { username: params.id },
   });
 
+  const openPredictions = await prisma.openPrediction.findMany({
+    where: { authorId: params.id },
+    orderBy: { startTime: "desc" },
+    take: 6,
+  });
+
+  if (openPredictions.length > 0) {
+    const recentPredictions = await fetchRecentPredictionGraphData(
+      openPredictions
+    );
+
+    recentPredictions.forEach((elem, index) => {
+      let x = [];
+      let y = [];
+      let coords = [];
+
+      elem.results.forEach((obj) => {
+        x.push(obj.t);
+        y.push(obj.c);
+        coords.push({ x: obj.t, y: obj.c });
+      });
+
+      const elemGraphData = {
+        predictionId: openPredictions[index].id,
+        ticker: elem.ticker,
+        datasets: [
+          {
+            data: coords,
+            borderWidth: 1,
+            borderColor: setLineColor(y),
+            borderDash: [],
+          },
+          {
+            data: JSON.parse(openPredictions[index].coordinates),
+            borderWidth: 1,
+            borderColor: "#a7a7a7",
+            borderDash: [5, 5],
+          },
+        ],
+      };
+
+      graphData.push(elemGraphData);
+    });
+  }
+
   if (resProfile) {
     return {
       props: {
-        profile: JSON.parse(JSON.stringify(resProfile)),
+        profile: JSON.parse(
+          JSON.stringify(
+            resProfile,
+            (key, value) =>
+              typeof value === "bigint" ? value.toString() : value // return everything else unchanged
+          )
+        ),
+        recentPredictions: graphData,
       },
     };
   }
@@ -114,3 +171,47 @@ export async function getStaticProps({ params }) {
     },
   };
 }
+
+const fetchRecentPredictionGraphData = async (openPredictions) => {
+  return Promise.all(
+    openPredictions.map((e) => {
+      const ticker = e.ticker;
+      const timeSpan = "6M";
+      const { multiplier, time, subtract, span } =
+        convertLabelToTimeSpan(timeSpan);
+
+      const tAgo = moment().subtract(subtract, span).format("YYYY-MM-DD");
+      const tCurrent = moment().format("YYYY-MM-DD");
+
+      return fetch(
+        `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/${multiplier}/${time}/${tAgo}/${tCurrent}?adjusted=true&sort=asc&apiKey=${process.env.PG_KEY}`
+      ).then((response) => response.json());
+    })
+  );
+};
+
+const setLineColor = (array) => {
+  const red = "#EA4335";
+  const green = "#34A853";
+  if (array[0] < array[array.length - 1]) return green;
+  return red;
+};
+
+const convertLabelToTimeSpan = (label) => {
+  switch (label) {
+    case "1D":
+      return { multiplier: 15, time: "minute", subtract: 1, span: "days" };
+    case "5D":
+      return { multiplier: 1, time: "hour", subtract: 5, span: "days" };
+    case "1M":
+      return { multiplier: 1, time: "day", subtract: 1, span: "months" };
+    case "6M":
+      return { multiplier: 1, time: "day", subtract: 6, span: "months" };
+    case "1Y":
+      return { multiplier: 1, time: "day", subtract: 1, span: "years" };
+    case "5Y":
+      return { multiplier: 2, time: "day", subtract: 5, span: "years" };
+    default:
+      return { multiplier: 2, time: "day", subtract: 15, span: "years" };
+  }
+};

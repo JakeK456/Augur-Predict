@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { GrEdit } from "react-icons/gr";
 import useOutsideClick from "hooks/useOutsideClick";
-import { nanoid } from "nanoid";
 import { useRouter } from "next/router";
 
 const imageMimeType = /image\/(png|jpg|jpeg)/i;

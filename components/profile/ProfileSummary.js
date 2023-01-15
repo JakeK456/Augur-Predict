@@ -1,6 +1,8 @@
+import Link from "next/link";
 import Avatar from "./Avatar";
 import FollowButton from "./FollowButton";
 import FollowDetails from "./FollowDetails";
+import { useRouter } from "next/router";
 
 export default function ProfileSummary({
   user,
@@ -9,6 +11,7 @@ export default function ProfileSummary({
   following,
   setButtonClick,
 }) {
+  const router = useRouter();
   return (
     <div className="p-4 md:p-2 md:-mt-10">
       <div className="flex md:block">
@@ -23,13 +26,20 @@ export default function ProfileSummary({
         </div>
       </div>
       <div className="mt-4">
-        <FollowButton
-          profile={profile}
-          user={user}
-          setButtonClick={setButtonClick}
-        />
+        <FollowButton profile={profile} setButtonClick={setButtonClick} />
       </div>
       <FollowDetails followers={followers} following={following} />
+      {user?.id === profile?.userId &&
+        router.query.tab !== "make-prediction" && (
+          <div className="flex items-center h-10 w-full rounded bg-dark-theme-green border  border-dark-theme-border text-dark-theme-6 hover:text-dark-hover-text hover:bg-dark-theme-green-hover">
+            <Link
+              href={`${router.query.id}?tab=make-prediction`}
+              className="grow text-center"
+            >
+              Make a Prediction
+            </Link>
+          </div>
+        )}
     </div>
   );
 }

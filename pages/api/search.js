@@ -44,21 +44,6 @@ export default async function handler(req, res) {
       } catch (error) {
         return res.status(500).json({ error });
       }
-      try {
-        const { name, targetName } = req.body;
-        const removeFollower = await prisma.follows.delete({
-          where: {
-            followerName_followingName: {
-              followerName: name,
-              followingName: targetName,
-            },
-          },
-        });
-        res.status(200).json(removeFollower);
-      } catch (error) {
-        res.status(500).json({ error });
-      }
-      break;
     default:
       return res.status(500).json({ message: "HTTP method not supported." });
   }
