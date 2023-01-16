@@ -8,14 +8,25 @@ export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
     event.stopPropagation();
+
+    const res = await fetch(`/api/profile/username`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+      }),
+    });
+    const { username } = await res.json();
 
     signIn("credentials", {
       email,
       password,
-      callbackUrl: `/`,
+      callbackUrl: `/${username}`,
     });
   };
 

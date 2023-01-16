@@ -13,7 +13,7 @@ import {
   TimeScale,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { PredictionGraphBounds } from "utils/graph";
+import { PortfolioGraphBounds } from "utils/graph";
 
 ChartJS.register(
   CategoryScale,
@@ -28,7 +28,10 @@ ChartJS.register(
 );
 
 export default function GraphCard({ graphData }) {
-  const graphBounds = new PredictionGraphBounds(graphData.datasets[0].data);
+  const graphBounds = new PortfolioGraphBounds(
+    graphData.datasets[0].data,
+    graphData.datasets[1].data
+  );
   const options = {
     responsive: true,
     scales: {
@@ -43,7 +46,7 @@ export default function GraphCard({ graphData }) {
           color: "#6E767E",
           maxTicksLimit: 7,
         },
-        min: graphBounds.xMin,
+        min: graphBounds.xMin - graphBounds.xPadding,
         max: graphBounds.xMax + graphBounds.xPadding,
         grid: {
           color: "#13181E",
@@ -86,7 +89,7 @@ export default function GraphCard({ graphData }) {
   };
 
   return (
-    <div className="object-contain border border-dark-theme-border rounded-2xl p-2">
+    <div className="object-contain border border-dark-theme-border rounded-xl p-2">
       <Line options={options} data={graphData} />
     </div>
   );

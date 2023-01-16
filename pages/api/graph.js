@@ -5,13 +5,17 @@ export default async function handler(req, res) {
     case "GET":
       try {
         const { ticker, timeSpan } = req.query;
+        console.log(timeSpan);
         const { multiplier, time, subtract, span } =
           convertLabelToTimeSpan(timeSpan);
 
         const tAgo = moment().subtract(subtract, span).format("YYYY-MM-DD");
         const tCurrent = moment().format("YYYY-MM-DD");
 
-        const pgUrl = `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/${multiplier}/${time}/${tAgo}/${tCurrent}?adjusted=true&sort=asc&apiKey=${process.env.PG_KEY}`;
+        console.log(tAgo);
+        console.log(tCurrent);
+
+        const pgUrl = `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/${multiplier}/${time}/${tAgo}/${tCurrent}?adjusted=true&limit=5000&sort=desc&apiKey=${process.env.PG_KEY}`;
         const pgRes = await fetch(pgUrl);
         const rawdata = await pgRes.json();
 
@@ -68,10 +72,8 @@ const setLineColor = (array) => {
 
 const convertLabelToTimeSpan = (label) => {
   switch (label) {
-    case "1D":
-      return { multiplier: 15, time: "minute", subtract: 1, span: "days" };
     case "5D":
-      return { multiplier: 1, time: "hour", subtract: 5, span: "days" };
+      return { multiplier: 5, time: "minute", subtract: 5, span: "days" };
     case "1M":
       return { multiplier: 1, time: "day", subtract: 1, span: "months" };
     case "6M":

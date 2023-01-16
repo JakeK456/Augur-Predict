@@ -6,6 +6,8 @@ import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 const moment = require("moment");
 
+const TIME_SPAN_MULTIPLIER = 4;
+
 export default function Profile({ profile = null, recentPredictions }) {
   const { data: session, status } = useSession();
   const user = session?.user;
@@ -176,15 +178,22 @@ const fetchRecentPredictionGraphData = async (openPredictions) => {
   return Promise.all(
     openPredictions.map((e) => {
       const ticker = e.ticker;
-      const timeSpan = "6M";
-      const { multiplier, time, subtract, span } =
-        convertLabelToTimeSpan(timeSpan);
-
-      const tAgo = moment().subtract(subtract, span).format("YYYY-MM-DD");
-      const tCurrent = moment().format("YYYY-MM-DD");
-
+      const predictionStart = Number(e.startTime);
+      const predictionEnd = Number(e.endTime);
+      const timeDiff = predictionEnd - predictionStart;
+      const timeSpan = timeDiff * TIME_SPAN_MULTIPLIER;
+      const tStart = moment(predictionEnd)
+        .subtract(timeSpan, "milliseconds")
+        .format("YYYY-MM-DD");
+      const tEnd = moment(predictionEnd).format("YYYY-MM-DD");
+      let multiplier = 5;
+      let time = "minute";
+      if (timeSpan > 604800000) {
+        multiplier = 1;
+        time = "day";
+      }
       return fetch(
-        `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/${multiplier}/${time}/${tAgo}/${tCurrent}?adjusted=true&sort=asc&apiKey=${process.env.PG_KEY}`
+        `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/${multiplier}/${time}/${tStart}/${tEnd}?adjusted=true&sort=asc&apiKey=${process.env.PG_KEY}`
       ).then((response) => response.json());
     })
   );
@@ -195,23 +204,4 @@ const setLineColor = (array) => {
   const green = "#34A853";
   if (array[0] < array[array.length - 1]) return green;
   return red;
-};
-
-const convertLabelToTimeSpan = (label) => {
-  switch (label) {
-    case "1D":
-      return { multiplier: 15, time: "minute", subtract: 1, span: "days" };
-    case "5D":
-      return { multiplier: 1, time: "hour", subtract: 5, span: "days" };
-    case "1M":
-      return { multiplier: 1, time: "day", subtract: 1, span: "months" };
-    case "6M":
-      return { multiplier: 1, time: "day", subtract: 6, span: "months" };
-    case "1Y":
-      return { multiplier: 1, time: "day", subtract: 1, span: "years" };
-    case "5Y":
-      return { multiplier: 2, time: "day", subtract: 5, span: "years" };
-    default:
-      return { multiplier: 2, time: "day", subtract: 15, span: "years" };
-  }
 };

@@ -36,7 +36,7 @@ export default function SearchBar() {
         className="h-8 pl-8 w-full pr-2 text-sm rounded caret-dark-bg-text-1 text-dark-bg-text-1 bg-dark-bg border border-dark-bg-border"
         id="search"
         type="text"
-        placeholder="Search"
+        placeholder="Search people..."
         autoComplete="off"
         value={search}
         onChange={handleSearchChange}
