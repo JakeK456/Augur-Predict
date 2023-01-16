@@ -76,7 +76,7 @@ export default function MakePredictionContainer() {
     <div suppressHydrationWarning={true}>
       <form className="flex h-8 my-6 mx-2" onSubmit={handleTickerSubmit}>
         <input
-          className="pl-2 w-full pr-2 text-sm rounded caret-dark-bg-text-1 text-dark-bg-text-1 bg-dark-bg border border-dark-bg-border"
+          className="pl-2 w-full pr-2 text-lg sm:text-sm rounded caret-dark-bg-text-1 text-dark-bg-text-1 bg-dark-bg border border-dark-bg-border"
           id="tickerSearchBar"
           type="text"
           placeholder="Enter ticker symbol"

@@ -15,7 +15,7 @@ export default async function handler(req, res) {
         console.log(tAgo);
         console.log(tCurrent);
 
-        const pgUrl = `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/${multiplier}/${time}/${tAgo}/${tCurrent}?adjusted=true&limit=5000&sort=desc&apiKey=${process.env.PG_KEY}`;
+        const pgUrl = `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/${multiplier}/${time}/${tAgo}/${tCurrent}?adjusted=true&limit=5000&sort=asc&apiKey=${process.env.PG_KEY}`;
         const pgRes = await fetch(pgUrl);
         const rawdata = await pgRes.json();
 

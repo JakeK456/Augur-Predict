@@ -88,9 +88,9 @@ export default function Graph({ graphData, setGraphData }) {
       legend: {
         display: false,
       },
-      tooltip: {
-        enabled: true,
-      },
+      // tooltip: {
+      //   enabled: true,
+      // },
       title: {
         display: true,
         text: graphData.ticker,
@@ -103,9 +103,9 @@ export default function Graph({ graphData, setGraphData }) {
           wheel: {
             enabled: true,
           },
-          pinch: {
-            enabled: true,
-          },
+          // pinch: {
+          //   enabled: true,
+          // },
           mode: "xy",
         },
       },
