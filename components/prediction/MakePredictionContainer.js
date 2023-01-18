@@ -16,29 +16,28 @@ export default function MakePredictionContainer({ profile }) {
 
   // rerenders graph when timespan bar is clicked.
   useEffect(() => {
-    const fetchGraphData = async () => {
-      if (tickerInput === "") {
-        return;
-      }
-      try {
-        const res = await fetch(
-          `/api/graph?ticker=${tickerInput}&timeSpan=${timeSpan}`
-        );
-        const { graphData } = await res.json();
-        setGraphData(graphData);
-        setGraphKey(graphData.ticker.concat(timeSpan));
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     if (isMounted.current) {
       fetchGraphData();
     } else {
       isMounted.current = true;
     }
-  }, [timeSpan, tickerInput]);
+  }, [timeSpan]);
 
+  const fetchGraphData = async () => {
+    if (tickerInput === "") {
+      return;
+    }
+    try {
+      const res = await fetch(
+        `/api/graph?ticker=${tickerInput}&timeSpan=${timeSpan}`
+      );
+      const { graphData } = await res.json();
+      setGraphData(graphData);
+      setGraphKey(graphData.ticker.concat(timeSpan));
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const handleInputChange = (evt) => {
     const value = evt.target.value.toUpperCase();
     setTickerInput(value);
