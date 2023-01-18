@@ -31,7 +31,12 @@ ChartJS.register(
   TimeScale
 );
 
-export default function GraphCard({ profile, graphData }) {
+export default function GraphCard({
+  profile,
+  graphData,
+  predictionList,
+  setPredictionList,
+}) {
   const graphBounds = new PortfolioGraphBounds(
     graphData.datasets[0].data,
     graphData.datasets[1].data
@@ -111,6 +116,16 @@ export default function GraphCard({ profile, graphData }) {
 
   const pinPrediction = async () => {
     if (isPinned) {
+      setIsPinned(false);
+
+      // only called from ProfileOverview
+      if (predictionList) {
+        const newPredictionList = predictionList.filter((obj) => {
+          return obj.predictionId !== graphData.predictionId;
+        });
+        setPredictionList(newPredictionList);
+      }
+
       // unpin
       await fetch(`/api/pinned-predictions`, {
         method: "PATCH",
@@ -129,9 +144,9 @@ export default function GraphCard({ profile, graphData }) {
         },
         body: JSON.stringify([profile.username]),
       });
-      setIsPinned(false);
     } else {
       // pin
+      setIsPinned(true);
       const res = await fetch(`/api/pinned-predictions`, {
         method: "POST",
         headers: {
@@ -145,8 +160,6 @@ export default function GraphCard({ profile, graphData }) {
       const pinnedPredictions = await res.json();
 
       if (pinnedPredictions.ok) {
-        setIsPinned(true);
-
         // revalidate profile page
         await fetch("/api/revalidate", {
           method: "POST",
@@ -156,6 +169,7 @@ export default function GraphCard({ profile, graphData }) {
           body: JSON.stringify([profile.username]),
         });
       } else {
+        setIsPinned(true);
         alert(pinnedPredictions.message);
       }
     }
@@ -174,7 +188,7 @@ export default function GraphCard({ profile, graphData }) {
             onClick={pinPrediction}
           >
             <p className="text-xs text-dark-bg-text-1">
-              {isPinned ? "Pinned" : "Pin"}
+              {isPinned ? "Unpin" : "Pin"}
             </p>
             <GiPin className="text-dark-bg-text-1" />
           </div>
