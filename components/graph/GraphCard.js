@@ -14,6 +14,10 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { PortfolioGraphBounds } from "utils/graph";
+import { GiPin } from "react-icons/gi";
+import useIsMyProfile from "hooks/useIsMyProfile";
+import { useEffect, useState } from "react";
+import { nanoid } from "nanoid";
 
 ChartJS.register(
   CategoryScale,
@@ -27,7 +31,7 @@ ChartJS.register(
   TimeScale
 );
 
-export default function GraphCard({ graphData }) {
+export default function GraphCard({ profile, graphData }) {
   const graphBounds = new PortfolioGraphBounds(
     graphData.datasets[0].data,
     graphData.datasets[1].data
@@ -44,7 +48,7 @@ export default function GraphCard({ graphData }) {
         },
         ticks: {
           color: "#6E767E",
-          maxTicksLimit: 7,
+          maxTicksLimit: 5,
         },
         min: graphBounds.xMin - graphBounds.xPadding,
         max: graphBounds.xMax + graphBounds.xPadding,
@@ -81,16 +85,104 @@ export default function GraphCard({ graphData }) {
       tooltip: {
         enabled: true,
       },
-      title: {
-        display: true,
-        text: graphData.ticker,
-      },
     },
   };
 
+  const { loading, isMyProfile } = useIsMyProfile(profile);
+  const [isPinned, setIsPinned] = useState(false);
+
+  useEffect(() => {
+    const fetchPinnedPredictions = async () => {
+      const res = await fetch(
+        `/api/pinned-predictions?username=${profile.username}`
+      );
+      const pinnedPredictions = await res.json();
+
+      if (
+        pinnedPredictions.some(
+          (prediction) => prediction.id === graphData.predictionId
+        )
+      ) {
+        setIsPinned(true);
+      }
+    };
+    fetchPinnedPredictions();
+  }, [graphData.predictionId, profile.username]);
+
+  const pinPrediction = async () => {
+    if (isPinned) {
+      // unpin
+      await fetch(`/api/pinned-predictions`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          predictionId: graphData.predictionId,
+        }),
+      });
+
+      const revalidate = await fetch("/api/revalidate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify([profile.username]),
+      });
+      setIsPinned(false);
+    } else {
+      // pin
+      const res = await fetch(`/api/pinned-predictions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: profile.username,
+          predictionId: graphData.predictionId,
+        }),
+      });
+      const pinnedPredictions = await res.json();
+
+      if (pinnedPredictions.ok) {
+        setIsPinned(true);
+
+        // revalidate profile page
+        await fetch("/api/revalidate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify([profile.username]),
+        });
+      } else {
+        alert(pinnedPredictions.message);
+      }
+    }
+  };
+
   return (
-    <div className="object-contain border border-dark-theme-border rounded-xl p-2">
-      <Line options={options} data={graphData} />
+    <div>
+      <div className="flex items-center px-2 h-8 w-full border-x border-t border-dark-theme-border rounded-t-xl">
+        <p className="basis-1/3"></p>
+        <p className="basis-1/3 text-base flex justify-center text-dark-bg-text-1">
+          {graphData.ticker}
+        </p>
+        {!loading && isMyProfile && (
+          <div
+            className="basis-1/3 flex space-x-2 items-center justify-end cursor-pointer"
+            onClick={pinPrediction}
+          >
+            <p className="text-xs text-dark-bg-text-1">
+              {isPinned ? "Pinned" : "Pin"}
+            </p>
+            <GiPin className="text-dark-bg-text-1" />
+          </div>
+        )}
+      </div>
+      <div className="object-contain border-x border-b border-dark-theme-border rounded-b-xl px-2 pb-2">
+        <Line options={options} data={graphData} />
+      </div>
     </div>
   );
 }

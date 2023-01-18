@@ -8,7 +8,11 @@ const moment = require("moment");
 
 const TIME_SPAN_MULTIPLIER = 4;
 
-export default function Profile({ profile = null, recentPredictions }) {
+export default function Profile({
+  profile = null,
+  recentPredictions = [],
+  pinnedPredictions = [],
+}) {
   const { data: session, status } = useSession();
   const user = session?.user;
 
@@ -48,6 +52,7 @@ export default function Profile({ profile = null, recentPredictions }) {
           following={following}
           setButtonClick={setButtonClick}
           recentPredictions={recentPredictions}
+          pinnedPredictions={pinnedPredictions}
         />
       </div>
 
@@ -80,6 +85,7 @@ export default function Profile({ profile = null, recentPredictions }) {
               following={following}
               setButtonClick={setButtonClick}
               recentPredictions={recentPredictions}
+              pinnedPredictions={pinnedPredictions}
             />
           </div>
         </div>
@@ -100,56 +106,14 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  let graphData = [];
+  const username = params.id;
 
   const resProfile = await prisma.profile.findUnique({
-    where: { username: params.id },
+    where: { username },
   });
 
-  const openPredictions = await prisma.openPrediction.findMany({
-    where: { authorId: params.id },
-    orderBy: { startTime: "desc" },
-    take: 6,
-  });
-
-  if (openPredictions.length > 0) {
-    const recentPredictions = await fetchRecentPredictionGraphData(
-      openPredictions
-    );
-
-    recentPredictions.forEach((elem, index) => {
-      let x = [];
-      let y = [];
-      let coords = [];
-
-      elem.results.forEach((obj) => {
-        x.push(obj.t);
-        y.push(obj.c);
-        coords.push({ x: obj.t, y: obj.c });
-      });
-
-      const elemGraphData = {
-        predictionId: openPredictions[index].id,
-        ticker: elem.ticker,
-        datasets: [
-          {
-            data: coords,
-            borderWidth: 1,
-            borderColor: setLineColor(y),
-            borderDash: [],
-          },
-          {
-            data: JSON.parse(openPredictions[index].coordinates),
-            borderWidth: 1,
-            borderColor: "#a7a7a7",
-            borderDash: [5, 5],
-          },
-        ],
-      };
-
-      graphData.push(elemGraphData);
-    });
-  }
+  const recentPredictions = await getRecentPredictions(username);
+  const pinnedPredictions = await getPinnedPredictions(username);
 
   if (resProfile) {
     return {
@@ -161,7 +125,8 @@ export async function getStaticProps({ params }) {
               typeof value === "bigint" ? value.toString() : value // return everything else unchanged
           )
         ),
-        recentPredictions: graphData,
+        recentPredictions,
+        pinnedPredictions,
       },
     };
   }
@@ -174,9 +139,128 @@ export async function getStaticProps({ params }) {
   };
 }
 
-const fetchRecentPredictionGraphData = async (openPredictions) => {
+const getRecentPredictions = async (username) => {
+  const recentPredictions = await prisma.prediction.findMany({
+    where: { username },
+    orderBy: { startTime: "desc" },
+    take: 6,
+  });
+
+  if (recentPredictions.length === 0) {
+    return [];
+  }
+
+  let graphData = [];
+
+  const recentPredictionsData = await fetchGraphData(recentPredictions);
+
+  recentPredictionsData.forEach((elem, index) => {
+    // omits bad polygon api requests. i.e. when end date is very close to
+    // current time (intraday predictions). need to fix because predictions
+    // are stored in db but never shown...
+    if (!elem.results) return;
+
+    let x = [];
+    let y = [];
+    let coords = [];
+
+    elem.results.forEach((obj) => {
+      x.push(obj.t);
+      y.push(obj.c);
+      coords.push({ x: obj.t, y: obj.c });
+    });
+
+    const elemGraphData = {
+      predictionId: recentPredictions[index].id,
+      ticker: elem.ticker,
+      datasets: [
+        {
+          data: coords,
+          borderWidth: 1,
+          borderColor: setLineColor(y),
+          borderDash: [],
+        },
+        {
+          data: JSON.parse(recentPredictions[index].coordinates),
+          borderWidth: 1,
+          borderColor: "#a7a7a7",
+          borderDash: [5, 5],
+        },
+      ],
+    };
+
+    graphData.push(elemGraphData);
+  });
+
+  return graphData;
+};
+
+const getPinnedPredictions = async (username) => {
+  const pinnedPredictions = await prisma.prediction.findMany({
+    where: {
+      AND: [
+        {
+          username,
+        },
+        {
+          pinned: { gt: 0 },
+        },
+      ],
+    },
+  });
+
+  if (pinnedPredictions.length === 0) {
+    return [];
+  }
+
+  let graphData = [];
+
+  const pinnedPredictionsData = await fetchGraphData(pinnedPredictions);
+
+  pinnedPredictionsData.forEach((elem, index) => {
+    // omits bad polygon api requests. i.e. when end date is very close to
+    // current time (intraday predictions). need to fix because predictions
+    // are stored in db but never shown...
+    if (!elem.results) return;
+
+    let x = [];
+    let y = [];
+    let coords = [];
+
+    elem.results.forEach((obj) => {
+      x.push(obj.t);
+      y.push(obj.c);
+      coords.push({ x: obj.t, y: obj.c });
+    });
+
+    const elemGraphData = {
+      predictionId: pinnedPredictions[index].id,
+      ticker: elem.ticker,
+      datasets: [
+        {
+          data: coords,
+          borderWidth: 1,
+          borderColor: setLineColor(y),
+          borderDash: [],
+        },
+        {
+          data: JSON.parse(pinnedPredictions[index].coordinates),
+          borderWidth: 1,
+          borderColor: "#a7a7a7",
+          borderDash: [5, 5],
+        },
+      ],
+    };
+
+    graphData.push(elemGraphData);
+  });
+
+  return graphData;
+};
+
+const fetchGraphData = async (predictions) => {
   return Promise.all(
-    openPredictions.map((e) => {
+    predictions.map((e) => {
       const ticker = e.ticker;
       const predictionStart = Number(e.startTime);
       const predictionEnd = Number(e.endTime);

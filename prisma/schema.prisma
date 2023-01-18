@@ -21,17 +21,16 @@ model User {
 }
 
 model Profile {
-  id                String             @id @default(cuid())
-  user              User               @relation(fields: [userId], references: [id])
-  userId            String             @unique
-  username          String             @unique
-  firstName         String
-  lastName          String
-  avatar            String?
-  followers         Follows[]          @relation("following")
-  following         Follows[]          @relation("follower")
-  openPredictions   OpenPrediction[]
-  closedPredictions ClosedPrediction[]
+  id          String       @id @default(cuid())
+  user        User         @relation(fields: [userId], references: [id])
+  userId      String       @unique
+  username    String       @unique
+  firstName   String
+  lastName    String
+  avatar      String?
+  followers   Follows[]    @relation("following")
+  following   Follows[]    @relation("follower")
+  predictions Prediction[]
 }
 
 model Follows {
@@ -43,22 +42,34 @@ model Follows {
   @@id([followerName, followingName])
 }
 
-model OpenPrediction {
+model Prediction {
   id          String  @id @default(cuid())
+  profile     Profile @relation(fields: [username], references: [username])
+  username    String
   ticker      String
   coordinates String
   startTime   BigInt
   endTime     BigInt
-  author      Profile @relation(fields: [authorId], references: [username])
-  authorId    String
+  isClosed    Boolean @default(false)
+  pinned      Int     @default(0)
 }
 
-model ClosedPrediction {
-  id          String  @id @default(cuid())
-  ticker      String
-  coordinates String
-  startTime   BigInt
-  endTime     BigInt
-  author      Profile @relation(fields: [authorId], references: [username])
-  authorId    String
-}
+// model OpenPrediction {
+//   id          String  @id @default(cuid())
+//   ticker      String
+//   coordinates String
+//   startTime   BigInt
+//   endTime     BigInt
+//   author      Profile @relation(fields: [authorId], references: [username])
+//   authorId    String
+// }
+
+// model ClosedPrediction {
+//   id          String  @id @default(cuid())
+//   ticker      String
+//   coordinates String
+//   startTime   BigInt
+//   endTime     BigInt
+//   author      Profile @relation(fields: [authorId], references: [username])
+//   authorId    String
+// }

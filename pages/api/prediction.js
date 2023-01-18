@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   switch (req.method) {
     case "GET":
       try {
-        console.log("GET REQUEST PREDICTIONS");
+        console.log("/api/prediction <--- this route not set up!");
         return res.status(200).json({});
       } catch (error) {
         return res.status(500).json({ error });
@@ -31,13 +31,13 @@ export default async function handler(req, res) {
         // const startTime = predictionData[0].x;
         const startTime = Date.now();
         const endTime = predictionData[predictionData.length - 1].x;
-        const prediction = await prisma.openPrediction.create({
+        await prisma.prediction.create({
           data: {
             ticker,
             coordinates,
             startTime,
             endTime,
-            authorId: profileUsername.username,
+            username: profileUsername.username,
           },
         });
 

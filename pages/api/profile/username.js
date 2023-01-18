@@ -4,7 +4,6 @@ export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
       const { email } = req.body;
-      console.log(email);
       const profile = await prisma.user.findUnique({
         where: { email },
         include: {

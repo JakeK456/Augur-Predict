@@ -5,15 +5,11 @@ export default async function handler(req, res) {
     case "GET":
       try {
         const { ticker, timeSpan } = req.query;
-        console.log(timeSpan);
         const { multiplier, time, subtract, span } =
           convertLabelToTimeSpan(timeSpan);
 
         const tAgo = moment().subtract(subtract, span).format("YYYY-MM-DD");
         const tCurrent = moment().format("YYYY-MM-DD");
-
-        console.log(tAgo);
-        console.log(tCurrent);
 
         const pgUrl = `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/${multiplier}/${time}/${tAgo}/${tCurrent}?adjusted=true&limit=5000&sort=asc&apiKey=${process.env.PG_KEY}`;
         const pgRes = await fetch(pgUrl);

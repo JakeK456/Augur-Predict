@@ -4,6 +4,7 @@ import ProfileList from "./ProfileList";
 import { useSession } from "next-auth/react";
 import MakePredictionContainer from "../prediction/MakePredictionContainer";
 import PredictionContainer from "../prediction/PredictionContainer";
+import ProfileOverview from "./ProfileOverview";
 
 export default function ProfileMainContainer({
   profile,
@@ -11,6 +12,7 @@ export default function ProfileMainContainer({
   following,
   setButtonClick,
   recentPredictions,
+  pinnedPredictions,
 }) {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -26,7 +28,12 @@ export default function ProfileMainContainer({
         <ProfileList profiles={following} setButtonClick={setButtonClick} />
       );
     case "predictions":
-      return <PredictionContainer recentPredictions={recentPredictions} />;
+      return (
+        <PredictionContainer
+          profile={profile}
+          recentPredictions={recentPredictions}
+        />
+      );
     case "make-prediction":
       if (status === "loading") {
         return <></>;
@@ -34,17 +41,13 @@ export default function ProfileMainContainer({
       if (user.id !== profile.userId) {
         router.push(`${profile.username}`);
       }
-      return <MakePredictionContainer />;
+      return <MakePredictionContainer profile={profile} />;
     default:
       return (
-        <div className="mt-4 text-md text-dark-bg-text-1">
-          <h3>Pinned Predictions</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-4 w-full border">
-            <div className="border aspect-video">{/* <Graph /> */}</div>
-            <div className="border aspect-video">{/* <Graph /> */}</div>
-            <div className="border aspect-video">{/* <Graph /> */}</div>
-          </div>
-        </div>
+        <ProfileOverview
+          profile={profile}
+          pinnedPredictions={pinnedPredictions}
+        />
       );
   }
 }

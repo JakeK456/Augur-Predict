@@ -7,7 +7,7 @@ const DynamicGraph = dynamic(() => import("../graph/Graph"), {
   ssr: false,
 });
 
-export default function MakePredictionContainer() {
+export default function MakePredictionContainer({ profile }) {
   const [graphData, setGraphData] = useState();
   const [tickerInput, setTickerInput] = useState("");
   const [timeSpan, setTimeSpan] = useState("6M");
@@ -16,28 +16,28 @@ export default function MakePredictionContainer() {
 
   // rerenders graph when timespan bar is clicked.
   useEffect(() => {
+    const fetchGraphData = async () => {
+      if (tickerInput === "") {
+        return;
+      }
+      try {
+        const res = await fetch(
+          `/api/graph?ticker=${tickerInput}&timeSpan=${timeSpan}`
+        );
+        const { graphData } = await res.json();
+        setGraphData(graphData);
+        setGraphKey(graphData.ticker.concat(timeSpan));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     if (isMounted.current) {
       fetchGraphData();
     } else {
       isMounted.current = true;
     }
-  }, [timeSpan]);
-
-  const fetchGraphData = async () => {
-    if (tickerInput === "") {
-      return;
-    }
-    try {
-      const res = await fetch(
-        `/api/graph?ticker=${tickerInput}&timeSpan=${timeSpan}`
-      );
-      const { graphData } = await res.json();
-      setGraphData(graphData);
-      setGraphKey(graphData.ticker.concat(timeSpan));
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  }, [timeSpan, tickerInput]);
 
   const handleInputChange = (evt) => {
     const value = evt.target.value.toUpperCase();
@@ -63,12 +63,22 @@ export default function MakePredictionContainer() {
       return;
     }
 
-    const res = await fetch("/api/prediction", {
+    // place prediction
+    await fetch("/api/prediction", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ ticker, predictionData }),
+    });
+
+    // revalidate profile page
+    await fetch("/api/revalidate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify([profile.username]),
     });
   };
 

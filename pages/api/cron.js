@@ -6,19 +6,21 @@ export default async function handler(req, res) {
       const { authorization } = req.headers;
 
       if (authorization === `Bearer ${process.env.API_SECRET_KEY}`) {
-        const finalizedPredictions = await prisma.openPrediction.findMany({
-          where: { endTime: { lt: Date.now() } },
+        const predictionsToBeClosed = await prisma.prediction.updateMany({
+          where: {
+            AND: [
+              {
+                isClosed: false,
+              },
+              {
+                endTime: { lt: Date.now() },
+              },
+            ],
+          },
+          data: {
+            isClosed: true,
+          },
         });
-
-        if (finalizedPredictions.length > 0) {
-          const closedPredictions = await prisma.closedPrediction.createMany({
-            data: finalizedPredictions,
-          });
-
-          const deletePredictions = await prisma.openPrediction.deleteMany({
-            where: { endTime: { lt: Date.now() } },
-          });
-        }
 
         res.status(200).json({ success: true });
       } else {
