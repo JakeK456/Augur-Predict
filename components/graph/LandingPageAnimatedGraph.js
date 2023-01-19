@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import "chartjs-adapter-moment";
 import moment from "moment";
 import {
@@ -35,7 +35,7 @@ export default function LandingPageAnimatedGraph() {
     : { datasets: [{ data: [] }] };
   const totalDuration = 10000;
   const delayBetweenPoints =
-    totalDuration / landingGraphData.datasets[0].data.length;
+    totalDuration / landingGraphData.datasets[1].data.length;
 
   const previousY = (ctx) => {
     if (ctx.index === 0) {
@@ -58,10 +58,15 @@ export default function LandingPageAnimatedGraph() {
           return 0;
         }
         ctx.xStarted = true;
-        if (ctx.index > 450) {
-          return ctx.index * delayBetweenPoints + 5000;
+
+        if (ctx.datasetIndex === 0) {
+          return 450 * delayBetweenPoints + 2000 + ctx.index * 700;
+        } else {
+          if (ctx.index > 450) {
+            return ctx.index * delayBetweenPoints + 10000;
+          }
+          return ctx.index * delayBetweenPoints;
         }
-        return ctx.index * delayBetweenPoints;
       },
     },
     y: {
@@ -74,10 +79,14 @@ export default function LandingPageAnimatedGraph() {
           return 0;
         }
         ctx.yStarted = true;
-        if (ctx.index > 550) {
-          return ctx.index * delayBetweenPoints + 5000;
+        if (ctx.datasetIndex === 0) {
+          return 450 * delayBetweenPoints + 2000 + ctx.index * 700;
+        } else {
+          if (ctx.index > 450) {
+            return ctx.index * delayBetweenPoints + 10000;
+          }
+          return ctx.index * delayBetweenPoints;
         }
-        return ctx.index * delayBetweenPoints;
       },
     },
   };

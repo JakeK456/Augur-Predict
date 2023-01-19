@@ -31,8 +31,8 @@ module.exports = {
 
       // animation class
       animation: {
-        fade: "fadeOut 5s ease-in-out forwards",
-        "fade-stay": "fadeStay 5s ease-in-out",
+        fade: "fadeOut 7s ease-in-out forwards",
+        "fade-stay": "fadeStay 9s ease-in-out",
       },
 
       // actual animation

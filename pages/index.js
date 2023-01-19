@@ -18,8 +18,8 @@ export default function Home() {
       setTextIndex(1);
       timer2 = setTimeout(() => {
         setTextIndex(2);
-      }, 5000);
-    }, 5000);
+      }, 10000);
+    }, 7000);
 
     return () => clearTimeout(timer1, timer2);
   }, []);

@@ -2,6 +2,46 @@ export const landingGraphData = {
   datasets: [
     {
       data: [
+        { x: 1609822800000, y: 340000 },
+        {
+          x: 1617712200000,
+          y: 370000,
+        },
+        {
+          x: 1625601600000,
+          y: 390000,
+        },
+        {
+          x: 1633491000000,
+          y: 405000,
+        },
+        {
+          x: 1641380400000,
+          y: 415000,
+        },
+        {
+          x: 1649269800000,
+          y: 428000,
+        },
+        {
+          x: 1657159200000,
+          y: 435000,
+        },
+        {
+          x: 1665048600000,
+          y: 450000,
+        },
+        {
+          x: 1672938000000,
+          y: 460000,
+        },
+      ],
+      borderWidth: 2,
+      borderColor: "#a7a7a7",
+      borderDash: [5, 5],
+    },
+    {
+      data: [
         {
           x: 1516338000000,
           y: 320238,
@@ -3050,17 +3090,6 @@ export const landingGraphData = {
       borderWidth: 1,
       borderColor: "#34A853",
       borderDash: [],
-    },
-    {
-      data: [
-        {
-          x: 1673931600000,
-          y: 466259.98,
-        },
-      ],
-      borderWidth: 1,
-      borderColor: "#a7a7a7",
-      borderDash: [5, 5],
     },
   ],
 };
