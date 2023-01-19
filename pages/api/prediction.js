@@ -5,7 +5,6 @@ export default async function handler(req, res) {
   switch (req.method) {
     case "GET":
       try {
-        console.log("/api/prediction <--- this route not set up!");
         return res.status(200).json({});
       } catch (error) {
         return res.status(500).json({ error });

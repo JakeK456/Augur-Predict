@@ -2,7 +2,7 @@ export const landingGraphData = {
   datasets: [
     {
       data: [
-        { x: 1609822800000, y: 340000 },
+        { x: 1609822800000, y: 346189 },
         {
           x: 1617712200000,
           y: 370000,

@@ -54,7 +54,7 @@ export default NextAuth({
           };
           return userAccount;
         } catch (err) {
-          console.log("Authorize error:", err);
+          console.error("Authorize error:", err);
         }
       },
     }),
