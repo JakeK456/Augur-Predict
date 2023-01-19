@@ -53,23 +53,3 @@ model Prediction {
   isClosed    Boolean @default(false)
   pinned      Int     @default(0)
 }
-
-// model OpenPrediction {
-//   id          String  @id @default(cuid())
-//   ticker      String
-//   coordinates String
-//   startTime   BigInt
-//   endTime     BigInt
-//   author      Profile @relation(fields: [authorId], references: [username])
-//   authorId    String
-// }
-
-// model ClosedPrediction {
-//   id          String  @id @default(cuid())
-//   ticker      String
-//   coordinates String
-//   startTime   BigInt
-//   endTime     BigInt
-//   author      Profile @relation(fields: [authorId], references: [username])
-//   authorId    String
-// }

@@ -1,34 +1,48 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Augur [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-## Getting Started
+## Description
 
-First, run the development server:
+View the website here: https://augur-predict.vercel.app/ !  
+Augur is a social app centered around predicting the stock market. Users can place stock predictions  
+which can be pinned to your profile page. Users can also search other people, follow them, and view  
+their predictions.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## Table of Contents
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- [Project Status](#project-status)
+- [Features](#features)
+- [Screen Shots](#screen-shots)
+- [License](#license)
+- [Credits](#credits)
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Project Status
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+This project is currently in development.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Things to come:
 
-## Learn More
+- Users news feed. (Let followers know when you make a new prediction, follow someone new, etc..)
+- Add likes/dislikes and comments to users predictions
+- Score accuracy of prediction
 
-To learn more about Next.js, take a look at the following resources:
+## Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- NextJS
+- Vercel
+- React
+- TailwindCSS
+- ChartJS
+- Prisma
+- PostgreSQL
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Screen Shots
 
-## Deploy on Vercel
+![](/public/profile_example.png)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+## Credits
+
+I copied GitHub page layout, dark theme, and styling :)

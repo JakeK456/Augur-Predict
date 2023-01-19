@@ -55,7 +55,8 @@ export default function Graph({ graphData, setGraphData }) {
           ? chartRef.current.scales.x.max
           : graphBounds.xMax + graphBounds.xPadding,
         grid: {
-          color: "#13181E",
+          // color: "#13181E",
+          color: "#0D1117",
         },
       },
       y: {
@@ -72,7 +73,8 @@ export default function Graph({ graphData, setGraphData }) {
           ? chartRef.current.scales.y.max
           : graphBounds.yMax + graphBounds.yPadding,
         grid: {
-          color: "#13181E",
+          // color: "#13181E",
+          color: "#0D1117",
         },
       },
     },

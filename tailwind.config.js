@@ -28,9 +28,25 @@ module.exports = {
         "dark-bg-hover": "#21262C",
         "dark-nav-underline": "#F78166",
       },
+
+      // animation class
+      animation: {
+        fade: "fadeOut 5s ease-in-out forwards",
+        "fade-stay": "fadeStay 5s ease-in-out",
+      },
+
+      // actual animation
+      keyframes: (theme) => ({
+        fadeOut: {
+          "0%, 100%": { opacity: 0 },
+          "50%": { opacity: 100 },
+        },
+        fadeStay: {
+          "0%": { opacity: 0 },
+          "100%": { opacity: 100 },
+        },
+      }),
     },
   },
   plugins: [],
 };
-
-// "dark-theme-3": "#696E8F"

@@ -30,7 +30,7 @@ export default function AccountMenu({ user, isOpen }) {
             href="/account"
             className="flex items-center grow pl-4 text-sm text-dark-theme-6 hover:text-dark-hover-text hover:bg-dark-surface-hover"
           >
-            Account
+            Settings
           </Link>
         </li>
         <li className="flex h-12 py-2">

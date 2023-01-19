@@ -7,20 +7,20 @@ export default function useProfile() {
   const userId = session?.user.id;
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    const fetchData = async () => {
+      const res = await fetch("/api/profile/summary", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
+      });
+      const profile = await res.json();
+      setProfile(profile);
+    };
 
-  const fetchData = async () => {
-    const res = await fetch("/api/profile/summary", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId }),
-    });
-    const profile = await res.json();
-    setProfile(profile);
-  };
+    fetchData();
+  }, [userId]);
 
   return profile;
 }

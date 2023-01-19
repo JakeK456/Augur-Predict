@@ -30,22 +30,27 @@ export default function SearchBar() {
     }
   };
   return (
-    <div ref={ref} className="relative grow shrink py-4 mx-2 md:mx-4 max-w-xs">
-      <BiSearchAlt2 className="absolute bottom-[19px] left-1 h-6 w-6 text-dark-bg-text-2" />
-      <input
-        className="h-8 pl-8 w-full pr-2 text-lg sm:text-sm rounded caret-dark-bg-text-1 text-dark-bg-text-1 bg-dark-bg border border-dark-bg-border"
-        id="search"
-        type="text"
-        placeholder="Search people..."
-        autoComplete="off"
-        value={search}
-        onChange={handleSearchChange}
-      />
-      <SearchResults
-        profiles={profiles}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-      />
+    <div className="grow">
+      <div
+        ref={ref}
+        className="justify-start grow shrink relative py-4 mx-2 md:mx-4 max-w-xs"
+      >
+        <BiSearchAlt2 className="absolute bottom-[19px] left-1 h-6 w-6 text-dark-bg-text-2" />
+        <input
+          className="h-8 pl-8 w-full pr-2 text-lg sm:text-sm rounded caret-dark-bg-text-1 text-dark-bg-text-1 bg-dark-bg border border-dark-bg-border"
+          id="search"
+          type="text"
+          placeholder="Search people..."
+          autoComplete="off"
+          value={search}
+          onChange={handleSearchChange}
+        />
+        <SearchResults
+          profiles={profiles}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+        />
+      </div>
     </div>
   );
 }

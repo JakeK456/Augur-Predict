@@ -46,14 +46,16 @@ export default function Profile({
         <div className="h-[37px] border-b border-dark-bg-border">
           <ProfileNav />
         </div>
-        <ProfileMainContainer
-          profile={profile}
-          followers={followers}
-          following={following}
-          setButtonClick={setButtonClick}
-          recentPredictions={recentPredictions}
-          pinnedPredictions={pinnedPredictions}
-        />
+        <div className="mx-2">
+          <ProfileMainContainer
+            profile={profile}
+            followers={followers}
+            following={following}
+            setButtonClick={setButtonClick}
+            recentPredictions={recentPredictions}
+            pinnedPredictions={pinnedPredictions}
+          />
+        </div>
       </div>
 
       {/* Tablet and Above */}

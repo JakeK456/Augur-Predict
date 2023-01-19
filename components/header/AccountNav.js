@@ -6,7 +6,7 @@ export default function AccountNav() {
   const { data: session, status } = useSession();
 
   if (status === "loading") {
-    return <></>;
+    return <AccountNavSignInButton />;
   }
   return (
     <div className="shrink-0 flex justify-end">
