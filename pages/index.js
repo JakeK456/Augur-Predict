@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useProfileProvider } from "hooks/ProfileProvider";
 import { Rosario } from "@next/font/google";
+import { set } from "lodash";
 
 const sansita = Rosario({ subsets: ["latin"] });
 
@@ -18,29 +19,34 @@ export default function Home() {
 
   useEffect(() => {
     setRerenderGraph(!rerenderGraph);
-    let timer1, timer2;
+    let timer1, timer2, timer3, timer4;
 
     timer1 = setTimeout(() => {
       setTextIndex(1);
       timer2 = setTimeout(() => {
         setTextIndex(2);
-      }, 10000);
+        timer3 = setTimeout(() => {
+          setTextIndex(3);
+          timer4 = setTimeout(() => {
+            setTextIndex(4);
+          }, 10000);
+        }, 10000);
+      }, 8000);
     }, 7000);
 
-    return () => clearTimeout(timer1, timer2);
+    return () => clearTimeout(timer1, timer2, timer3);
   }, []);
 
   return (
     <div className="flex flex-col items-center text-dark-bg-text-1 p-2">
-      <p className={`mt-4 mb-12 text-4xl text-center ${sansita.className}`}>
-        Welcome to Augur,
-      </p>
-      <LandingPageAnimatedLabel index={textIndex} />
+      <div className="mt-16 mb-8 h-20">
+        <LandingPageAnimatedLabel index={textIndex} />
+      </div>
       <div className="w-full md:w-1/2">
         <LandingPageAnimatedGraph />
       </div>
       <p className="mt-16 mb-4 text-center text-dark-bg-text-2">
-        View the most popular{" "}
+        View popular{" "}
         <Link href="/featured-profiles" className="text-dark-theme-blue">
           profiles
         </Link>

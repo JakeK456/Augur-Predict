@@ -33,7 +33,7 @@ export default function LandingPageAnimatedGraph() {
   const data = chartRef.current
     ? landingGraphData
     : { datasets: [{ data: [] }] };
-  const totalDuration = 10000;
+  const totalDuration = 20000;
   const delayBetweenPoints =
     totalDuration / landingGraphData.datasets[1].data.length;
 

@@ -10,7 +10,6 @@ export default function ProfileList({ profiles, setButtonClick }) {
           setButtonClick={setButtonClick}
         />
       ))}
-      ;
     </>
   );
 }
