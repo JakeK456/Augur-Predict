@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GraphCard from "../graph/GraphCard";
 export default function ProfileOverview({ profile, pinnedPredictions }) {
   const [predictionList, setPredictionList] = useState(pinnedPredictions);
+  useEffect(() => {
+    setPredictionList(pinnedPredictions);
+  }, [pinnedPredictions]);
   return (
     <div>
       <p className="mt-4 mb-1 text-sm text-dark-bg-text-1">
